@@ -93,30 +93,45 @@ create table if not exists appointments (
   status text default 'scheduled' check (status in ('scheduled', 'completed', 'cancelled'))
 );
 
+-- Fix Foreign Key Constraint (Safety Check)
+-- Ensure no conflicting FK exists on patient_id if it was created previously
+DO $$ 
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'appointments_patient_id_fkey') THEN
+    ALTER TABLE appointments DROP CONSTRAINT appointments_patient_id_fkey;
+  END IF;
+END $$;
+
 alter table appointments enable row level security;
 
--- Drop existing policies to update them
+-- Policies (Updated for visibility fixes)
 drop policy if exists "Users can view their own appointments" on appointments;
 drop policy if exists "Users can book appointments" on appointments;
 drop policy if exists "Doctors can update appointments." on appointments;
+drop policy if exists "View Appointments" on appointments;
+drop policy if exists "Book Appointments" on appointments;
+drop policy if exists "Update Appointments" on appointments;
 
-create policy "Users can view their own appointments"
+-- Comprehensive SELECT policy
+create policy "View Appointments"
   on appointments for select
   using ( 
-    auth.uid() = patient_id 
-    or auth.uid() = doctor_id 
+    auth.uid() = doctor_id 
+    or auth.uid() = patient_id
+    -- Also allow if the user is the 'doctor' of the patient linked to the appointment
     or exists (
       select 1 from patients 
       where patients.id = appointments.patient_id 
-      and (patients.email = auth.email() or patients.user_id = auth.uid())
+      and patients.doctor_id = auth.uid()
     )
   );
 
-create policy "Users can book appointments"
+-- INSERT policy
+create policy "Book Appointments"
   on appointments for insert
-  with check ( 
+  with check (
     auth.uid() = patient_id 
-    or auth.uid() = doctor_id 
+    or auth.uid() = doctor_id
     or exists (
         select 1 from patients 
         where patients.id = appointments.patient_id 
@@ -124,7 +139,8 @@ create policy "Users can book appointments"
     )
   );
 
-create policy "Doctors can update appointments."
+-- UPDATE policy
+create policy "Update Appointments"
   on appointments for update
   using ( auth.uid() = doctor_id );
 
@@ -155,7 +171,6 @@ create policy "Patients can view their prescriptions."
   );
 
 -- 6. Storage Setup
--- Note: You might need to create the bucket manually in the dashboard if this fails
 insert into storage.buckets (id, name, public) 
 values ('medvita-files', 'medvita-files', true)
 on conflict (id) do nothing;
