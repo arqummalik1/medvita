@@ -2,7 +2,7 @@
 
 MedVita is a comprehensive healthcare management platform built with React, Vite, and Supabase. It features role-based access for doctors and patients, allowing efficient management of appointments, prescriptions, and medical history in a modern, responsive interface.
 
-![MedVita Dashboard](./frontend/public/vite.svg) *Replace with actual screenshot if available*
+![MedVita Dashboard](./public/vite.svg) *Replace with actual screenshot if available*
 
 ## 🚀 Tech Stack
 
