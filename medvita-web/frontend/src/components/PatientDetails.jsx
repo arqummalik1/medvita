@@ -1,18 +1,44 @@
+import { useAuth } from '../context/AuthContext'
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import { X, Calendar, FileText, Activity, Clock, File, Download } from 'lucide-react'
-import { supabase } from '../lib/supabaseClient'
+import { X, Activity, FileText, Clock, Calendar, File, Download, Eye } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
+import { supabase } from '../lib/supabaseClient'
+import PrescriptionPreviewModal from './PrescriptionPreviewModal'
 
 export default function PatientDetails({ isOpen, setIsOpen, patient }) {
-  const [activeTab, setActiveTab] = useState('timeline')
+  const { profile: doctorProfile } = useAuth()
   const [timelineData, setTimelineData] = useState([])
   const [loading, setLoading] = useState(true)
+  const [medicalProfile, setMedicalProfile] = useState(null)
 
+  // Preview Modal State
+  const [viewPrescription, setViewPrescription] = useState(null)
+  const [isViewOpen, setIsViewOpen] = useState(false)
+  const [isAutoDownload, setIsAutoDownload] = useState(false)
+
+  const handleView = (prescription, autoDownload = false) => {
+    setViewPrescription(prescription)
+    setIsAutoDownload(autoDownload)
+    setIsViewOpen(true)
+  }
+
+  // Prescription view handling
   useEffect(() => {
     if (isOpen && patient) {
       fetchPatientHistory()
+      // Initialize medical profile with default values or fetch from database
+      setMedicalProfile({
+        bp: '120/80',
+        hr: '72',
+        temp: '98.6°F',
+        weight: 'N/A',
+        allergies: [],
+        conditions: [],
+        bloodType: 'N/A'
+      })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, patient])
 
   const fetchPatientHistory = async () => {
@@ -24,7 +50,7 @@ export default function PatientDetails({ isOpen, setIsOpen, patient }) {
         .select('*')
         .eq('patient_id', patient.patient_id) // Assuming patient_id links to profiles.id or similar
         .or(`patient_id.eq.${patient.id}`) // Also check direct ID reference
-      
+
       // 2. Fetch Prescriptions
       const { data: prescriptions } = await supabase
         .from('prescriptions')
@@ -100,7 +126,7 @@ export default function PatientDetails({ isOpen, setIsOpen, patient }) {
                             {patient?.name}
                           </Dialog.Title>
                           <p className="mt-1 text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                            <span className="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-0.5 rounded-md text-xs">ID: {patient?.patient_id}</span>
+                            <span className="bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300 px-2 py-0.5 rounded-md text-xs">ID: {patient?.patient_id}</span>
                             <span>•</span>
                             <span>{patient?.age} years</span>
                             <span>•</span>
@@ -122,8 +148,87 @@ export default function PatientDetails({ isOpen, setIsOpen, patient }) {
 
                     {/* Content */}
                     <div className="relative flex-1 px-4 py-8 sm:px-8">
+                      {/* Medical Overview Section */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                        {/* Vitals Card */}
+                        <div className="bg-white dark:bg-slate-800/50 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400">
+                              <Activity className="h-5 w-5" />
+                            </div>
+                            <h4 className="font-bold text-slate-900 dark:text-white">Recent Vitals</h4>
+                          </div>
+                          {medicalProfile ? (
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <p className="text-xs text-slate-500 uppercase font-bold">Blood Pressure</p>
+                                <p className="text-lg font-semibold text-slate-900 dark:text-white">{medicalProfile.bp}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-slate-500 uppercase font-bold">Heart Rate</p>
+                                <p className="text-lg font-semibold text-slate-900 dark:text-white">{medicalProfile.hr}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-slate-500 uppercase font-bold">Temperature</p>
+                                <p className="text-lg font-semibold text-slate-900 dark:text-white">{medicalProfile.temp}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-slate-500 uppercase font-bold">Weight</p>
+                                <p className="text-lg font-semibold text-slate-900 dark:text-white">{medicalProfile.weight}</p>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="animate-pulse space-y-3">
+                              <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
+                              <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Medical Profile Card */}
+                        <div className="bg-white dark:bg-slate-800/50 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
+                              <FileText className="h-5 w-5" />
+                            </div>
+                            <h4 className="font-bold text-slate-900 dark:text-white">Medical Profile</h4>
+                          </div>
+                          {medicalProfile ? (
+                            <div className="space-y-3">
+                              <div>
+                                <p className="text-xs text-slate-500 uppercase font-bold mb-1">Allergies</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {medicalProfile.allergies.length > 0 ? medicalProfile.allergies.map(a => (
+                                    <span key={a} className="px-2 py-1 rounded-lg bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 text-xs font-medium border border-red-100 dark:border-red-900/30">{a}</span>
+                                  )) : <span className="text-sm text-slate-500">None known</span>}
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-xs text-slate-500 uppercase font-bold mb-1">Chronic Conditions</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {medicalProfile.conditions.length > 0 ? medicalProfile.conditions.map(c => (
+                                    <span key={c} className="px-2 py-1 rounded-lg bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400 text-xs font-medium border border-orange-100 dark:border-orange-900/30">{c}</span>
+                                  )) : <span className="text-sm text-slate-500">None</span>}
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-xs text-slate-500 uppercase font-bold mb-1">Blood Type</p>
+                                <span className="text-sm font-semibold text-slate-900 dark:text-white">{medicalProfile.bloodType}</span>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="animate-pulse space-y-3">
+                              <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
+                              <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4"></div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-6 px-1">Patient History</h3>
+
                       {loading ? (
-                         <div className="flex flex-col items-center justify-center py-20 space-y-4">
+                        <div className="flex flex-col items-center justify-center py-20 space-y-4">
                           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
                           <p className="text-slate-400 text-sm animate-pulse">Loading history...</p>
                         </div>
@@ -144,23 +249,21 @@ export default function PatientDetails({ isOpen, setIsOpen, patient }) {
                                   {format(parseISO(date), 'MMMM d, yyyy')}
                                 </span>
                               </div>
-                              
+
                               <div className="relative border-l-2 border-slate-200 dark:border-slate-700 ml-4 sm:ml-6 space-y-8 pb-4">
                                 {items.map((item, idx) => (
                                   <div key={idx} className="relative pl-8 sm:pl-10">
                                     {/* Timeline Dot */}
-                                    <div className={`absolute -left-[9px] top-6 h-[18px] w-[18px] rounded-full border-4 border-slate-50 dark:border-slate-900 shadow-sm ${
-                                      item.type === 'appointment' ? 'bg-blue-500' : 'bg-emerald-500'
-                                    }`}></div>
+                                    <div className={`absolute -left-[9px] top-6 h-[18px] w-[18px] rounded-full border-4 border-slate-50 dark:border-slate-900 shadow-sm ${item.type === 'appointment' ? 'bg-teal-500' : 'bg-emerald-500'
+                                      }`}></div>
 
                                     <div className="group bg-white dark:bg-slate-800/50 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-200">
                                       <div className="flex items-start justify-between mb-3">
                                         <div className="flex items-center gap-3">
-                                          <div className={`p-2 rounded-xl ${
-                                            item.type === 'appointment' 
-                                              ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' 
-                                              : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400'
-                                          }`}>
+                                          <div className={`p-2 rounded-xl ${item.type === 'appointment'
+                                            ? 'bg-teal-50 text-teal-600 dark:bg-teal-900/20 dark:text-teal-400'
+                                            : 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400'
+                                            }`}>
                                             {item.type === 'appointment' ? (
                                               <Calendar className="h-5 w-5" />
                                             ) : (
@@ -183,11 +286,10 @@ export default function PatientDetails({ isOpen, setIsOpen, patient }) {
                                           <div className="space-y-2">
                                             <div className="flex items-center gap-2">
                                               <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Status</span>
-                                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                                                item.status === 'Confirmed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${item.status === 'Confirmed' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
                                                 item.status === 'Pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                                                'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300'
-                                              }`}>
+                                                  'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300'
+                                                }`}>
                                                 {item.status}
                                               </span>
                                             </div>
@@ -226,21 +328,39 @@ export default function PatientDetails({ isOpen, setIsOpen, patient }) {
                                                 </div>
                                               </div>
                                             )}
-                                            
+
                                             {/* File Attachments (if any) */}
-                                            {item.file_url && (
-                                              <div className="pt-2">
-                                                 <a 
-                                                  href={item.file_url} 
-                                                  target="_blank" 
+                                            <div className="flex items-center gap-3 pt-2">
+                                              {item.file_url && (
+                                                <a
+                                                  href={item.file_url}
+                                                  target="_blank"
                                                   rel="noopener noreferrer"
                                                   className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors border border-blue-100 dark:border-blue-900/30"
                                                 >
                                                   <File className="h-4 w-4" />
                                                   View Attachment
                                                 </a>
-                                              </div>
-                                            )}
+                                              )}
+
+                                              {/* PDF Generator */}
+                                              <button
+                                                onClick={() => handleView(item, true)}
+                                                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-xl text-sm font-medium hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition-colors border border-emerald-100 dark:border-emerald-900/30"
+                                                title="Download PDF"
+                                              >
+                                                <Download className="h-4 w-4" />
+                                                Download PDF
+                                              </button>
+
+                                              <button
+                                                onClick={() => handleView(item)}
+                                                className="inline-flex items-center gap-2 px-4 py-2 bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 rounded-xl text-sm font-medium hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors border border-teal-100 dark:border-teal-900/30"
+                                              >
+                                                <Eye className="h-4 w-4" />
+                                                View
+                                              </button>
+                                            </div>
                                           </div>
                                         )}
                                       </div>
@@ -260,6 +380,20 @@ export default function PatientDetails({ isOpen, setIsOpen, patient }) {
           </div>
         </div>
       </Dialog>
+
+      {/* View Modal */}
+      {isViewOpen && (
+        <PrescriptionPreviewModal
+          isOpen={isViewOpen}
+          onClose={() => {
+            setIsViewOpen(false)
+            setIsAutoDownload(false)
+          }}
+          prescription={viewPrescription}
+          patient={patient}
+          autoDownload={isAutoDownload}
+        />
+      )}
     </Transition.Root>
   )
 }

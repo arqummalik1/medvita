@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabaseClient'
 
 const AuthContext = createContext({})
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider = ({ children }) => {
@@ -42,7 +43,7 @@ export const AuthProvider = ({ children }) => {
         .select('*')
         .eq('id', userId)
         .single()
-      
+
       if (error) {
         console.error('Error fetching profile:', error)
       } else {
@@ -72,7 +73,7 @@ export const AuthProvider = ({ children }) => {
     // Note: The handle_new_user trigger on the database will automatically 
     // create the profile using the metadata we just passed.
     // We don't need to manually insert into profiles here to avoid race conditions.
-    
+
     return data
   }
 

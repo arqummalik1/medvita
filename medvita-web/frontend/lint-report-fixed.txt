@@ -1,0 +1,16 @@
+
+> medvita-web@0.0.0 lint
+> eslint .
+
+
+/Users/arqummalik/Documents/trae_projects/MedVita/medvita-web/frontend/src/pages/Login.jsx
+  21:9  error  Unexpected empty object pattern  no-empty-pattern
+
+/Users/arqummalik/Documents/trae_projects/MedVita/medvita-web/frontend/src/pages/PrescriptionsViewer.jsx
+  1:31  error  'useRef' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+/Users/arqummalik/Documents/trae_projects/MedVita/medvita-web/frontend/src/pages/Signup.jsx
+  23:9  error  Unexpected empty object pattern  no-empty-pattern
+
+✖ 3 problems (3 errors, 0 warnings)
+

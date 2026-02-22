@@ -5,10 +5,27 @@ create extension if not exists "uuid-ossp";
 create table if not exists profiles (
   id uuid references auth.users on delete cascade not null primary key,
   email text,
-  role text check (role in ('doctor', 'patient')) default 'patient',
+  role text check (role in ('doctor', 'patient', 'receptionist')) default 'patient',
   full_name text,
+  employer_id uuid references auth.users(id), -- For receptionists to link to a doctor
+  clinic_code text unique, -- For doctors to generate an invite code
+  google_calendar_sync_enabled boolean default false,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
+
+-- Migration for existing tables
+do $$
+begin
+  if not exists (select 1 from information_schema.columns where table_name = 'profiles' and column_name = 'google_calendar_sync_enabled') then
+    alter table profiles add column google_calendar_sync_enabled boolean default false;
+  end if;
+  if not exists (select 1 from information_schema.columns where table_name = 'profiles' and column_name = 'employer_id') then
+    alter table profiles add column employer_id uuid references auth.users(id);
+  end if;
+  if not exists (select 1 from information_schema.columns where table_name = 'profiles' and column_name = 'clinic_code') then
+    alter table profiles add column clinic_code text unique;
+  end if;
+end $$;
 
 -- RLS for Profiles
 alter table profiles enable row level security;
@@ -32,11 +49,24 @@ create table if not exists patients (
   name text not null,
   age integer,
   sex text,
+  blood_pressure text, -- e.g. "120/80"
+  heart_rate integer, -- e.g. 72
   email text, -- Added email for linking
   patient_id text unique default 'P-' || substring(md5(random()::text) from 1 for 6),
   doctor_id uuid references auth.users(id) not null,
   user_id uuid references auth.users(id) -- Optional direct link
 );
+
+-- Migration for new columns
+do $$
+begin
+  if not exists (select 1 from information_schema.columns where table_name = 'patients' and column_name = 'blood_pressure') then
+    alter table patients add column blood_pressure text;
+  end if;
+  if not exists (select 1 from information_schema.columns where table_name = 'patients' and column_name = 'heart_rate') then
+    alter table patients add column heart_rate integer;
+  end if;
+end $$;
 
 -- RLS for Patients
 alter table patients enable row level security;
@@ -45,9 +75,32 @@ create policy "Doctors can view their own patients."
   on patients for select
   using ( auth.uid() = doctor_id );
 
+create policy "Receptionists can view their employer's patients"
+  on patients for select
+  using (
+    exists (
+      select 1 from profiles 
+      where profiles.id = auth.uid() 
+      and profiles.role = 'receptionist' 
+      and profiles.employer_id = patients.doctor_id
+    )
+  );
+
 create policy "Doctors can insert patients."
   on patients for insert
   with check ( auth.uid() = doctor_id );
+
+create policy "Receptionists can insert patients for their employer"
+  on patients for insert
+  with check (
+    auth.uid() = doctor_id OR
+    exists (
+      select 1 from profiles 
+      where profiles.id = auth.uid() 
+      and profiles.role = 'receptionist' 
+      and profiles.employer_id = patients.doctor_id
+    )
+  );
 
 create policy "Doctors can update their own patients."
   on patients for update
@@ -186,15 +239,30 @@ using ( bucket_id = 'medvita-files' and auth.role() = 'authenticated' );
 -- 7. Auto-create profile on new user
 create or replace function public.handle_new_user()
 returns trigger as $$
+declare
+  v_role text;
+  v_clinic_code text;
+  v_employer_id uuid;
 begin
-  insert into public.profiles (id, email, role, full_name)
+  v_role := coalesce(new.raw_user_meta_data->>'role', 'patient');
+  v_clinic_code := new.raw_user_meta_data->>'clinic_code';
+  
+  -- If it's a receptionist and they provided a code, find the doctor
+  if v_role = 'receptionist' and v_clinic_code is not null then
+    select id into v_employer_id from public.profiles where clinic_code = v_clinic_code and role = 'doctor' limit 1;
+  end if;
+
+  insert into public.profiles (id, email, role, full_name, employer_id)
   values (
     new.id, 
     new.email, 
-    coalesce(new.raw_user_meta_data->>'role', 'patient'), 
-    new.raw_user_meta_data->>'full_name'
+    v_role, 
+    new.raw_user_meta_data->>'full_name',
+    v_employer_id
   )
-  on conflict (id) do nothing;
+  on conflict (id) do update set 
+    employer_id = EXCLUDED.employer_id;
+    
   return new;
 end;
 $$ language plpgsql security definer;

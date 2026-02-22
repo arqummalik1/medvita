@@ -1,43 +1,29 @@
-import { motion } from 'framer-motion'
-import { Sun, Moon } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
+import { Sun, Moon } from 'lucide-react'
+import clsx from 'clsx'
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ className }) {
   const { theme, toggleTheme } = useTheme()
-  const isDark = theme === 'dark'
 
   return (
     <button
       onClick={toggleTheme}
-      className="glass-panel relative inline-flex h-10 w-10 items-center justify-center !rounded-xl !p-0 transition-transform hover:scale-105 active:scale-95"
+      className={clsx(
+        "relative p-2.5 rounded-xl transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 group overflow-hidden",
+        theme === 'dark' 
+          ? "bg-gradient-to-br from-amber-500/20 to-orange-500/20 text-amber-400 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/30 shadow-lg shadow-amber-500/20" 
+          : "bg-gradient-to-br from-cyan-500/20 to-blue-500/20 text-cyan-600 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-500/30 shadow-lg shadow-cyan-500/20",
+        className
+      )}
       aria-label="Toggle Dark Mode"
     >
-      <div className="relative h-6 w-6">
-        <motion.div
-          initial={false}
-          animate={{
-            scale: isDark ? 0 : 1,
-            rotate: isDark ? 90 : 0,
-            opacity: isDark ? 0 : 1
-          }}
-          transition={{ duration: 0.2, ease: 'easeInOut' }}
-          className="absolute inset-0 flex items-center justify-center"
-        >
-          <Sun className="h-6 w-6 text-yellow-500" />
-        </motion.div>
-        
-        <motion.div
-          initial={false}
-          animate={{
-            scale: isDark ? 1 : 0,
-            rotate: isDark ? 0 : -90,
-            opacity: isDark ? 1 : 0
-          }}
-          transition={{ duration: 0.2, ease: 'easeInOut' }}
-          className="absolute inset-0 flex items-center justify-center"
-        >
-          <Moon className="h-6 w-6 text-blue-400" />
-        </motion.div>
+      <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div className="relative z-10">
+        {theme === 'dark' ? (
+          <Sun className="w-5 h-5 transition-transform duration-500 group-hover:rotate-180" />
+        ) : (
+          <Moon className="w-5 h-5 transition-transform duration-500 group-hover:-rotate-12" />
+        )}
       </div>
     </button>
   )

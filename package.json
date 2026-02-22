@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "framer-motion": "^12.27.5"
+    "framer-motion": "^12.27.5",
+    "recharts": "^3.7.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

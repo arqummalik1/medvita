@@ -33,7 +33,9 @@ vi.mock('@headlessui/react', () => {
 // Let's try rendering without deep mocking first, usually it works if we polyfill ResizeObserver.
 
 // Polyfill ResizeObserver for Headless UI
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
+// Polyfill ResizeObserver for Headless UI
+const globalObj = typeof globalThis !== 'undefined' ? globalThis : window
+globalObj.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
   disconnect: vi.fn(),
@@ -51,15 +53,17 @@ describe('PrescriptionCreator', () => {
 
   it('renders correctly when open', () => {
     render(
-      <PrescriptionCreator 
-        isOpen={true} 
-        setIsOpen={mockSetIsOpen} 
-        patient={mockPatient} 
+      <PrescriptionCreator
+        isOpen={true}
+        setIsOpen={mockSetIsOpen}
+        patient={mockPatient}
       />
     )
 
-    expect(screen.getByText(/New Prescription for/i)).toBeInTheDocument()
-    expect(screen.getByText('John Doe')).toBeInTheDocument()
+    // console.log(document.body.innerHTML)
+    const heading = screen.getByRole('heading', { level: 2 })
+    expect(heading).toHaveTextContent(/New Prescription/i)
+    expect(screen.getByTestId('patient-name')).toHaveTextContent('John Doe')
     expect(screen.getByPlaceholderText(/e.g. Acute Bronchitis/i)).toBeInTheDocument()
     expect(screen.getByPlaceholderText(/Enter medications and instructions.../i)).toBeInTheDocument()
   })
@@ -69,10 +73,10 @@ describe('PrescriptionCreator', () => {
     supabase.from.mockReturnValue({ insert: mockInsert })
 
     render(
-      <PrescriptionCreator 
-        isOpen={true} 
-        setIsOpen={mockSetIsOpen} 
-        patient={mockPatient} 
+      <PrescriptionCreator
+        isOpen={true}
+        setIsOpen={mockSetIsOpen}
+        patient={mockPatient}
       />
     )
 
@@ -97,7 +101,7 @@ describe('PrescriptionCreator', () => {
           prescription_text: expect.stringContaining('Diagnosis: Common Cold'),
         }),
       ])
-      
+
       // Check full string format
       expect(mockInsert).toHaveBeenCalledWith([
         expect.objectContaining({
