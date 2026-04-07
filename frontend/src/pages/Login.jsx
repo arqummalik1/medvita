@@ -42,6 +42,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [toast, setToast] = useState(null)
+  const [formError, setFormError] = useState(null)
   const [loading, setLoading] = useState(false)
   const { signIn } = useAuth()
   const navigate = useNavigate()
@@ -52,6 +53,7 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     setToast(null)
+    setFormError(null)
 
     try {
       const { data, error } = await signIn(email, password)
@@ -93,7 +95,7 @@ export default function Login() {
         message = 'Too many attempts. Please try again later.'
       }
 
-      showToast('error', message)
+      setFormError(message)
     } finally {
       setLoading(false)
     }
@@ -205,9 +207,12 @@ export default function Login() {
                     autoComplete="email"
                     required
                     className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-colors"
-                    placeholder="arqummalk1@gmail.com"
+                    placeholder="name@example.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      setFormError(null)
+                    }}
                   />
                 </div>
               </div>
@@ -231,18 +236,21 @@ export default function Login() {
                     className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-colors"
                     placeholder="••••••••••"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value)
+                      setFormError(null)
+                    }}
                   />
                 </div>
               </div>
 
               {/* Error Display (shown conditionally) */}
-              {toast?.type === 'error' && (
+              {formError && (
                 <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
                   <div className="w-4 h-4 rounded-full border border-red-400 flex items-center justify-center shrink-0">
                     <span className="text-red-400 text-xs">!</span>
                   </div>
-                  <span className="text-red-400 text-xs">{toast.message}</span>
+                  <span className="text-red-400 text-xs">{formError}</span>
                 </div>
               )}
 
