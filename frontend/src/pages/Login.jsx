@@ -75,13 +75,11 @@ export default function Login() {
 
       const role = profileData?.role || 'patient'
 
-      setTimeout(() => {
-        if (role === 'receptionist') {
-          navigate('/dashboard/reception', { replace: true })
-        } else {
-          navigate('/dashboard', { replace: true })
-        }
-      }, 1000)
+      if (role === 'receptionist') {
+        navigate('/dashboard/reception', { replace: true })
+      } else {
+        navigate('/dashboard', { replace: true })
+      }
 
     } catch (error) {
       console.error('[Auth] Login error:', error)

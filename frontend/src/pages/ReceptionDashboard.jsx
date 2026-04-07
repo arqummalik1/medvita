@@ -190,7 +190,7 @@ export default function ReceptionDashboard() {
 
     // ── Render ────────────────────────────────────────────────────────────────
     return (
-        <div className="max-w-7xl mx-auto space-y-8 p-4 md:p-8">
+        <div className="max-w-7xl mx-auto space-y-6 p-4 md:p-6">
 
             {/* Fixed toast */}
             <AnimatePresence>
@@ -216,7 +216,7 @@ export default function ReceptionDashboard() {
             </AnimatePresence>
 
             {/* Header banner */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-blue-500 via-teal-500 to-cyan-500 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl shadow-blue-500/20">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-blue-500 via-teal-500 to-cyan-500 rounded-3xl p-6 text-white relative overflow-hidden shadow-2xl shadow-blue-500/20">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-400/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
                 <div className="relative z-10 flex items-center gap-5">
@@ -224,7 +224,7 @@ export default function ReceptionDashboard() {
                         <Users className="h-8 w-8 text-white" />
                     </div>
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Reception Desk</h1>
+                        <h1 className="text-2xl font-bold tracking-tight">Reception Desk</h1>
                         <p className="text-blue-100 mt-1 flex items-center gap-2 text-sm">
                             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                             Fast-entry clinic queue manager

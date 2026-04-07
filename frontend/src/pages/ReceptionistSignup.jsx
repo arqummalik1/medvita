@@ -86,7 +86,7 @@ export default function ReceptionistSignup() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 via-slate-50 to-cyan-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-all duration-500">
+        <div className="min-h-screen flex items-center justify-center relative py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 via-slate-50 to-cyan-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-all duration-500 overflow-y-auto overflow-x-hidden">
 
             {/* Background blobs — NO pink/purple/indigo */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
@@ -94,7 +94,7 @@ export default function ReceptionistSignup() {
                 <div className="absolute bottom-[-10%] left-[-5%] w-[800px] h-[800px] bg-blue-400/15 dark:bg-blue-500/8 rounded-full mix-blend-multiply filter blur-[120px] opacity-50 dark:opacity-25 animate-pulse duration-[18s]" />
             </div>
 
-            <div className="w-full max-w-xl p-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-2xl rounded-[40px] shadow-2xl border border-white/50 dark:border-slate-700/50 relative z-10">
+            <div className="w-full max-w-xl p-6 sm:p-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-2xl rounded-3xl sm:rounded-[40px] shadow-2xl border border-white/50 dark:border-slate-700/50 relative z-10 my-auto">
 
                 {/* Toast */}
                 <AnimatePresence>
@@ -104,10 +104,10 @@ export default function ReceptionistSignup() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -20, scale: 0.95 }}
                             className={clsx(
-                                'absolute -top-16 left-1/2 -translate-x-1/2 w-[90%] p-4 rounded-2xl shadow-xl backdrop-blur-md border flex items-center gap-3 z-50',
+                                'fixed top-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[400px] p-4 rounded-xl shadow-2xl flex items-center gap-3 z-[100] border backdrop-blur-md',
                                 toast.type === 'success'
-                                    ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-200'
-                                    : 'bg-red-50/90 border-red-200 text-red-800 dark:bg-red-900/30 dark:border-red-800 dark:text-red-200'
+                                    ? 'bg-emerald-500 border-emerald-400 text-white'
+                                    : 'bg-red-500 border-red-400 text-white'
                             )}
                         >
                             {toast.type === 'success' ? (
@@ -120,22 +120,22 @@ export default function ReceptionistSignup() {
                     )}
                 </AnimatePresence>
 
-                <div className="text-center mb-10 relative z-10">
+                <div className="text-center mb-6 sm:mb-10 relative z-10">
                     {/* Icon — blue to cyan, no indigo */}
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-blue-500 to-cyan-500 mb-6 group shadow-xl shadow-blue-500/30 hover:scale-110 transition-transform duration-300 relative overflow-hidden">
+                    <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-blue-500 to-cyan-500 mb-4 sm:mb-6 group shadow-xl shadow-blue-500/30 hover:scale-110 transition-transform duration-300 relative overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
-                        <Key className="h-10 w-10 text-white relative z-10" />
+                        <Key className="h-8 w-8 sm:h-10 sm:w-10 text-white relative z-10" />
                     </div>
-                    <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">Staff Access</h2>
-                    <p className="text-slate-500 dark:text-slate-400 text-lg font-medium">Link your account to a clinic using the Doctor's Code</p>
+                    <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-2 sm:mb-3 tracking-tight">Staff Access</h2>
+                    <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg font-medium px-2">Link your account to a clinic using the Doctor's Code</p>
                 </div>
 
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
 
                     {/* Clinic Code — blue accent, no indigo */}
-                    <div className="p-5 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/50 rounded-2xl">
+                    <div className="p-4 sm:p-5 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/50 rounded-2xl">
                         <label className="block text-sm font-bold text-blue-900 dark:text-blue-300 mb-2">Clinic Access Code *</label>
-                        <p className="text-xs text-blue-600/80 dark:text-blue-400 mb-3">Ask your doctor for the unique 6-character integration code found in their settings.</p>
+                        <p className="text-[10px] sm:text-xs text-blue-600/80 dark:text-blue-400 mb-3">Ask your doctor for the unique 6-character integration code found in their settings.</p>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-blue-500">
                                 <Lock className="h-5 w-5 text-blue-300 dark:text-blue-500" />

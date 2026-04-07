@@ -2,7 +2,7 @@ import { useState, useEffect, Fragment } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { useAuth } from '../context/AuthContext'
 import { useSearchParams } from 'react-router-dom'
-import { Plus, Search, Edit2, Trash2, FilePlus, X, Eye, MoreVertical, Users, Activity, Heart, CheckCircle } from 'lucide-react'
+import { Plus, Search, Edit2, Trash2, FilePlus, X, Eye, MoreVertical, Users, Activity, Heart, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import PrescriptionCreator from '../components/PrescriptionCreator'
 import PatientDetails from '../components/PatientDetails'
@@ -31,6 +31,11 @@ export default function PatientsManager() {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   const [selectedPatientForDetails, setSelectedPatientForDetails] = useState(null)
 
+  // Pagination
+  const PAGE_SIZE = 25
+  const [page, setPage] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
+
   const [formData, setFormData] = useState({
     name: '',
     age: '',
@@ -44,7 +49,7 @@ export default function PatientsManager() {
   useEffect(() => {
     fetchPatients()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter]) // Re-fetch when filter changes
+  }, [filter, page]) // Re-fetch when filter or page changes
 
   useEffect(() => {
     const action = searchParams.get('action')
@@ -56,10 +61,14 @@ export default function PatientsManager() {
   const fetchPatients = async () => {
     try {
       setLoading(true)
+      const from = page * PAGE_SIZE
+      const to = from + PAGE_SIZE - 1
+
       let query = supabase
         .from('patients')
-        .select('*')
+        .select('*', { count: 'exact' })
         .order('created_at', { ascending: false })
+        .range(from, to)
 
       // Apply Date Filter
       const now = new Date()
@@ -70,14 +79,15 @@ export default function PatientsManager() {
       } else if (filter === 'month') {
         query = query.gte('created_at', subMonths(now, 1).toISOString())
       }
-      // 'all' has no filter
 
       if (searchQuery) {
         query = query.or(`name.ilike.%${searchQuery}%,patient_id.ilike.%${searchQuery}%`)
       }
 
-      const { data: patientsData, error } = await query
+      const { data: patientsData, error, count } = await query
       if (error) throw error
+
+      setTotalCount(count || 0)
 
       // Fetch prescription status for these patients (Only show if prescribed TODAY)
       if (patientsData && patientsData.length > 0) {
@@ -90,10 +100,8 @@ export default function PatientsManager() {
           .in('patient_id', patientIds)
           .gte('created_at', todayStart)
 
-        // Create a set of patient IDs that have prescriptions TODAY
         const patientsWithRx = new Set(rxData?.map(rx => rx.patient_id) || [])
 
-        // Merge info
         const enhancedPatients = patientsData.map(p => ({
           ...p,
           hasPrescription: patientsWithRx.has(p.id)
@@ -110,8 +118,9 @@ export default function PatientsManager() {
     }
   }
 
-  // Real-time search debounce
+  // Real-time search debounce — reset to page 0 on search change
   useEffect(() => {
+    setPage(0)
     const delayDebounceFn = setTimeout(() => {
       fetchPatients()
     }, 300)
@@ -511,7 +520,7 @@ export default function PatientsManager() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md rounded-[24px] glass-panel p-8 text-left align-middle shadow-2xl transition-all">
+                <Dialog.Panel className="w-full max-w-md rounded-3xl glass-panel p-6 sm:p-8 text-left align-middle shadow-2xl transition-all">
                   <Dialog.Title
                     as="h3"
                     className="text-2xl font-bold leading-6 text-slate-900 dark:text-white mb-8"

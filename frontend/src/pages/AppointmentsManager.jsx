@@ -86,28 +86,39 @@ export default function AppointmentsManager() {
       const { data, error } = await query
       if (error) throw error
 
-      const processedData = await Promise.all(data.map(async (apt) => {
-        if (apt.patient_name && apt.patient_name !== 'Unknown Patient') return apt
+      // Batch-resolve missing names instead of N+1 individual queries
+      const missingPatientIds = [...new Set(data.filter(a => !a.patient_name || a.patient_name === 'Unknown Patient').map(a => a.patient_id).filter(Boolean))]
+      const missingDoctorIds = [...new Set(data.map(a => a.doctor_id).filter(Boolean))]
 
-        // Fetch names if missing (redundancy check)
-        if (isDoctor) {
-          // ... (existing name fetching logic kept simple for brevity if it works, otherwise can improve)
-          // For now assume names are handled or stored. 
-          // Re-implementing basic fetch if needed:
-          if (apt.patient_id) {
-            const { data: pData } = await supabase.from('patients').select('name').eq('id', apt.patient_id).maybeSingle()
-            if (pData) return { ...apt, patient_name: pData.name }
-            const { data: uData } = await supabase.from('profiles').select('full_name').eq('id', apt.patient_id).maybeSingle()
-            if (uData) return { ...apt, patient_name: uData.full_name }
-          }
-        } else {
-          if (apt.doctor_id) {
-            const { data: dData } = await supabase.from('profiles').select('full_name').eq('id', apt.doctor_id).maybeSingle()
-            if (dData) return { ...apt, doctor: { full_name: dData.full_name } }
-          }
+      let patientNameMap = {}
+      let doctorNameMap = {}
+
+      if (isDoctor && missingPatientIds.length > 0) {
+        const { data: patients } = await supabase.from('patients').select('id, name').in('id', missingPatientIds)
+        if (patients) patients.forEach(p => { patientNameMap[p.id] = p.name })
+        // Also check profiles for patient_ids that are auth user IDs
+        const unresolvedIds = missingPatientIds.filter(id => !patientNameMap[id])
+        if (unresolvedIds.length > 0) {
+          const { data: profiles } = await supabase.from('profiles').select('id, full_name').in('id', unresolvedIds)
+          if (profiles) profiles.forEach(p => { patientNameMap[p.id] = p.full_name })
         }
-        return apt
-      }))
+      }
+
+      if (!isDoctor && missingDoctorIds.length > 0) {
+        const { data: profiles } = await supabase.from('profiles').select('id, full_name').in('id', missingDoctorIds)
+        if (profiles) profiles.forEach(p => { doctorNameMap[p.id] = p.full_name })
+      }
+
+      const processedData = data.map(apt => {
+        const result = { ...apt }
+        if ((!apt.patient_name || apt.patient_name === 'Unknown Patient') && patientNameMap[apt.patient_id]) {
+          result.patient_name = patientNameMap[apt.patient_id]
+        }
+        if (!isDoctor && doctorNameMap[apt.doctor_id]) {
+          result.doctor = { full_name: doctorNameMap[apt.doctor_id] }
+        }
+        return result
+      })
 
       setAppointments(processedData)
     } catch (error) {

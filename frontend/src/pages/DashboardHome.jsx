@@ -5,7 +5,9 @@ import { supabase } from '../lib/supabaseClient'
 import { format } from 'date-fns'
 import StatCard from '../components/StatCard'
 import PatientEngagementChart from '../components/PatientEngagementChart'
-import { Plus, Calendar, FileText, Users, CheckCircle2, Clock } from 'lucide-react'
+import { Plus, Calendar, FileText, Users, CheckCircle2, Clock, Pill } from 'lucide-react'
+import PrescriptionCreator from '../components/PrescriptionCreator'
+
 import { motion, AnimatePresence } from 'framer-motion'
 import clsx from 'clsx'
 
@@ -14,6 +16,9 @@ function TodaysQueuePanel({ doctorId }) {
   const [patients, setPatients] = useState([])
   const [loading, setLoading] = useState(true)
   const [markingId, setMarkingId] = useState(null)
+  const [isPrescriptionOpen, setIsPrescriptionOpen] = useState(false)
+  const [selectedPatient, setSelectedPatient] = useState(null)
+
   // Stable ref so Realtime callback always has latest setter
   const setPatientsr = useRef(setPatients)
   setPatientsr.current = setPatients
@@ -82,6 +87,12 @@ function TodaysQueuePanel({ doctorId }) {
     // Realtime will update the UI automatically
   }
 
+  const handlePrescribe = (patient) => {
+    setSelectedPatient(patient)
+    setIsPrescriptionOpen(true)
+  }
+
+
   const waiting = patients.filter(p => p.queue_status !== 'seen')
   const seen = patients.filter(p => p.queue_status === 'seen')
   const nextPatient = waiting[0]
@@ -125,10 +136,18 @@ function TodaysQueuePanel({ doctorId }) {
           <button
             onClick={() => markSeen(nextPatient)}
             disabled={markingId === nextPatient.id}
-            className="shrink-0 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+            className="shrink-0 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
           >
             {markingId === nextPatient.id ? '...' : 'Mark Seen ✓'}
           </button>
+          <button
+            onClick={() => handlePrescribe(nextPatient)}
+            className="shrink-0 bg-blue-500 hover:bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+          >
+            <Pill className="w-3.5 h-3.5" />
+            Prescribe
+          </button>
+
         </div>
       )}
 
@@ -179,18 +198,27 @@ function TodaysQueuePanel({ doctorId }) {
                 <div className="text-[10px] text-slate-400 whitespace-nowrap mr-1">
                   {new Date(patient.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </div>
-                {/* Mark seen */}
-                <button
-                  onClick={() => markSeen(patient)}
-                  disabled={markingId === patient.id}
-                  title="Mark as seen"
-                  className="shrink-0 w-8 h-8 rounded-full border-2 border-slate-200 dark:border-slate-600 hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 flex items-center justify-center transition-all group-hover:opacity-100 disabled:opacity-40"
-                >
-                  {markingId === patient.id
-                    ? <div className="w-3 h-3 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
-                    : <CheckCircle2 className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 transition-colors" />
-                  }
-                </button>
+                <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => handlePrescribe(patient)}
+                    title="Prescribe"
+                    className="w-8 h-8 rounded-full border-2 border-slate-200 dark:border-slate-600 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center justify-center transition-all"
+                  >
+                    <Pill className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-blue-500 transition-colors" />
+                  </button>
+                  <button
+                    onClick={() => markSeen(patient)}
+                    disabled={markingId === patient.id}
+                    title="Mark as seen"
+                    className="w-8 h-8 rounded-full border-2 border-slate-200 dark:border-slate-600 hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 flex items-center justify-center transition-all disabled:opacity-40"
+                  >
+                    {markingId === patient.id
+                      ? <div className="w-3 h-3 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+                      : <CheckCircle2 className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 transition-colors" />
+                    }
+                  </button>
+                </div>
+
               </motion.div>
             ))}
 
@@ -226,6 +254,19 @@ function TodaysQueuePanel({ doctorId }) {
           </AnimatePresence>
         )}
       </div>
+
+      {/* Prescription Modal */}
+      {selectedPatient && (
+        <PrescriptionCreator
+          isOpen={isPrescriptionOpen}
+          setIsOpen={setIsPrescriptionOpen}
+          patient={selectedPatient}
+          onSuccess={() => {
+            setIsPrescriptionOpen(false)
+            fetchQueue()
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -319,9 +360,9 @@ export default function DashboardHome() {
   ]
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 md:space-y-6">
       {/* Quick Actions */}
-      <div className="glass-panel p-4">
+      <div className="glass-panel p-3 md:p-4">
         <div className="flex items-center gap-3 overflow-x-auto custom-scrollbar pb-2">
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-400 whitespace-nowrap">
             <Plus className="w-4 h-4" />
@@ -344,7 +385,21 @@ export default function DashboardHome() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        {isDoctor ? (
+          <div className="md:h-full">
+            <TodaysQueuePanel doctorId={user?.id} />
+          </div>
+        ) : (
+          <div className="block">
+            <StatCard
+              title="Upcoming Visits"
+              value={todaysAppointments.length}
+              trendValue={5}
+              chartData={[2, 3, 2, 4, 3, 5, 4]}
+            />
+          </div>
+        )}
         <Link to={isDoctor ? '/dashboard/patients' : '/dashboard/prescriptions'} className="block transition-transform hover:scale-[1.02]">
           <StatCard
             title={isDoctor ? 'Total Patients' : 'Total Prescriptions'}
@@ -361,72 +416,59 @@ export default function DashboardHome() {
             chartData={[90, 85, 95, 88, 92, 85, 82]}
           />
         </Link>
-        {isDoctor ? (
-          <div className="block">
-            <StatCard
-              title="Total Earnings"
-              value={`$${stats.earnings.toLocaleString()}`}
-              trendValue={16}
-              chartData={[500, 520, 540, 580, 600, 620, 640]}
-            />
-          </div>
-        ) : (
-          <div className="block">
-            <StatCard
-              title="Upcoming Visits"
-              value={todaysAppointments.length}
-              trendValue={5}
-              chartData={[2, 3, 2, 4, 3, 5, 4]}
-            />
-          </div>
-        )}
       </div>
 
       {/* Main Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className={clsx(
+        "grid grid-cols-1 gap-6",
+        isDoctor ? "lg:grid-cols-2" : "lg:grid-cols-3"
+      )}>
         {isDoctor && <PatientEngagementChart />}
 
         {/* Today's Appointments */}
-        <div className={`glass-panel col-span-1 ${isDoctor ? '' : 'lg:col-span-2'} p-6 flex flex-col`} style={{ minHeight: '360px' }}>
+        <div className={clsx(
+          "glass-panel col-span-1 p-4 md:p-6 flex flex-col",
+          !isDoctor && "lg:col-span-2"
+        )} style={{ minHeight: '320px' }}>
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Today's Appointments</h3>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Your schedule for today</p>
+              <h3 className="text-base md:text-lg font-bold text-slate-900 dark:text-white">Today's Appointments</h3>
+              <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">Your schedule for today</p>
             </div>
             <Link
               to="/dashboard/appointments"
-              className="text-xs font-bold text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/30 px-4 py-2 rounded-xl transition-all hover:scale-105"
+              className="text-[10px] md:text-xs font-bold text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/30 px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-all hover:scale-105"
             >
               View All →
             </Link>
           </div>
-          <div className="space-y-3 flex-1 overflow-y-auto pr-1 custom-scrollbar">
+          <div className="space-y-2.5 md:space-y-3 flex-1 overflow-y-auto pr-1 custom-scrollbar">
             {todaysAppointments.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-center py-12">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-100 to-blue-100 dark:from-cyan-900/30 dark:to-blue-900/30 flex items-center justify-center mb-4 shadow-lg">
-                  <Clock className="w-8 h-8 text-slate-400" />
+              <div className="flex flex-col items-center justify-center h-full text-center py-8 md:py-12">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-cyan-100 to-blue-100 dark:from-cyan-900/30 dark:to-blue-900/30 flex items-center justify-center mb-4 shadow-lg">
+                  <Clock className="w-6 h-6 md:w-8 md:h-8 text-slate-400" />
                 </div>
-                <p className="text-base font-semibold text-slate-900 dark:text-white mb-1">No appointments today</p>
-                <p className="text-sm text-slate-500 dark:text-slate-400">You're all clear!</p>
+                <p className="text-sm md:text-base font-semibold text-slate-900 dark:text-white mb-1">No appointments today</p>
+                <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">You're all clear!</p>
               </div>
             ) : (
               todaysAppointments.slice(0, 5).map((apt) => (
-                <div key={apt.id} className="group flex items-center justify-between p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-cyan-200 dark:hover:border-cyan-800 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-[1.02]">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 text-white flex items-center justify-center font-bold text-base shadow-lg group-hover:scale-110 transition-transform">
+                <div key={apt.id} className="group flex items-center justify-between p-3 md:p-4 rounded-2xl bg-white/60 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-cyan-200 dark:hover:border-cyan-800 transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-[1.01]">
+                  <div className="flex items-center gap-3 md:gap-4">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 text-white flex items-center justify-center font-bold text-sm md:text-base shadow-lg group-hover:scale-110 transition-transform">
                       {isDoctor ? (apt.patients?.name?.charAt(0) || 'P') : (apt.doctors?.name?.charAt(0) || 'D')}
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-slate-900 dark:text-white">
+                      <p className="text-xs md:text-sm font-bold text-slate-900 dark:text-white">
                         {isDoctor ? (apt.patients?.name || 'Patient') : (apt.doctors?.name || 'Doctor')}
                       </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                      <p className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                         {format(new Date(`${apt.date}T${apt.time}`), 'h:mm a')}
                       </p>
                     </div>
                   </div>
                   <span className={clsx(
-                    'text-xs px-3 py-1.5 rounded-full font-bold uppercase tracking-wide',
+                    'text-[10px] md:text-xs px-2.5 md:px-3 py-1 md:py-1.5 rounded-full font-bold uppercase tracking-wide',
                     apt.status === 'completed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' :
                       apt.status === 'cancelled' ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400' :
                         'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
@@ -438,13 +480,6 @@ export default function DashboardHome() {
             )}
           </div>
         </div>
-
-        {/* Live Queue — Doctor Only */}
-        {isDoctor && (
-          <div style={{ minHeight: '360px' }}>
-            <TodaysQueuePanel doctorId={user?.id} />
-          </div>
-        )}
       </div>
     </div>
   )

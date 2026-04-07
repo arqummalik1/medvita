@@ -44,9 +44,7 @@ export default function Signup() {
 
       if (user) {
         setToast({ type: 'success', message: 'Account created successfully! Redirecting...' });
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 2000);
+        navigate('/dashboard', { replace: true });
       }
     } catch (error) {
       console.error('Signup error:', error);
@@ -57,7 +55,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-cyan-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-all duration-500">
+    <div className="min-h-screen flex items-center justify-center relative py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-cyan-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-all duration-500 overflow-y-auto overflow-x-hidden">
 
       {/* Background blobs — NO pink/purple */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
@@ -66,7 +64,7 @@ export default function Signup() {
         <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-400/10 dark:bg-blue-500/5 rounded-full mix-blend-multiply filter blur-[100px] opacity-40 dark:opacity-20 animate-pulse duration-[12s]" />
       </div>
 
-      <div className="w-full max-w-xl p-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-2xl rounded-[40px] shadow-2xl border border-white/50 dark:border-slate-700/50 relative z-10">
+      <div className="w-full max-w-xl p-6 sm:p-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-2xl rounded-3xl sm:rounded-[40px] shadow-2xl border border-white/50 dark:border-slate-700/50 relative z-10 my-auto">
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-500/10 to-cyan-500/10 rounded-full blur-3xl" />
 
@@ -78,10 +76,10 @@ export default function Signup() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
               className={clsx(
-                'absolute -top-16 left-1/2 -translate-x-1/2 w-[90%] p-4 rounded-2xl shadow-xl backdrop-blur-md border flex items-center gap-3 z-50',
+                'fixed top-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[400px] p-4 rounded-xl shadow-2xl flex items-center gap-3 z-[100] border backdrop-blur-md',
                 toast.type === 'success'
-                  ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-200'
-                  : 'bg-red-50/90 border-red-200 text-red-800 dark:bg-red-900/30 dark:border-red-800 dark:text-red-200'
+                  ? 'bg-emerald-500 border-emerald-400 text-white'
+                  : 'bg-red-500 border-red-400 text-white'
               )}
             >
               {toast.type === 'success' ? (
@@ -94,14 +92,14 @@ export default function Signup() {
           )}
         </AnimatePresence>
 
-        <div className="text-center mb-10 relative z-10">
+        <div className="text-center mb-6 sm:mb-10 relative z-10">
           {/* App icon — cyan to emerald */}
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500 via-teal-500 to-emerald-500 mb-6 group shadow-xl shadow-cyan-500/30 hover:scale-110 transition-transform duration-300 relative overflow-hidden">
+          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-cyan-500 via-teal-500 to-emerald-500 mb-4 sm:mb-6 group shadow-xl shadow-cyan-500/30 hover:scale-110 transition-transform duration-300 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
-            <Activity className="h-10 w-10 text-white relative z-10" />
+            <Activity className="h-8 w-8 sm:h-10 sm:w-10 text-white relative z-10" />
           </div>
-          <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-3 tracking-tight">Create Account</h2>
-          <p className="text-slate-500 dark:text-slate-400 text-lg font-medium">Join MedVita today</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-2 sm:mb-3 tracking-tight">Create Account</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg font-medium">Join MedVita today</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -177,11 +175,11 @@ export default function Signup() {
                       checked
                         ? 'bg-gradient-to-br from-cyan-500 to-blue-500 border-transparent text-white shadow-xl shadow-cyan-500/30 scale-105'
                         : 'bg-white/60 dark:bg-slate-800/60 border-slate-200/50 dark:border-slate-700/50 text-slate-700 dark:text-slate-300 hover:bg-white/80 dark:hover:bg-slate-700/80 hover:border-cyan-300 dark:hover:border-cyan-600',
-                      'relative border rounded-2xl px-4 py-4 flex flex-col items-center justify-center text-sm font-bold cursor-pointer focus:outline-none transition-all duration-300 backdrop-blur-sm'
+                      'relative border rounded-xl sm:rounded-2xl px-3 sm:px-4 py-3 sm:py-4 flex flex-col items-center justify-center text-sm font-bold cursor-pointer focus:outline-none transition-all duration-300 backdrop-blur-sm'
                     )
                   }
                 >
-                  <RadioGroup.Label as="span">{roleOption.label}</RadioGroup.Label>
+                  <RadioGroup.Label as="span" className="text-xs sm:text-sm">{roleOption.label}</RadioGroup.Label>
                 </RadioGroup.Option>
               ))}
             </div>

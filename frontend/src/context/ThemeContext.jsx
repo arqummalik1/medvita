@@ -24,28 +24,45 @@ export function ThemeProvider({ children }) {
     return 'normal'
   })
 
+  const [appStyle, setAppStyle] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('appStyle') || 'modern'
+    }
+    return 'modern'
+  })
+
   useEffect(() => {
     const root = window.document.documentElement
 
-    // Remove previous class
+    // Theme Class
     root.classList.remove('light', 'dark')
-    // Add new class
     root.classList.add(theme)
 
-    // Set density attribute
+    // Density Attribute
     root.setAttribute('data-density', density)
+
+    // App Style Attribute
+    root.setAttribute('data-app-style', appStyle)
 
     // Save to localStorage
     localStorage.setItem('theme', theme)
     localStorage.setItem('density', density)
-  }, [theme, density])
+    localStorage.setItem('appStyle', appStyle)
+  }, [theme, density, appStyle])
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light')
   }
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, density, setDensity }}>
+    <ThemeContext.Provider value={{
+      theme,
+      toggleTheme,
+      density,
+      setDensity,
+      appStyle,
+      setAppStyle
+    }}>
       {children}
     </ThemeContext.Provider>
   )

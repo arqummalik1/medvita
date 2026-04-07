@@ -133,8 +133,187 @@
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 50px rgba(34, 211, 238, 0.2);
-  --shadow-glow-emerald: 0 0 50px rgba(52, 211, 153, 0.2);
+  --shadow-glow: 0 0 50px rgba(34, 211, 153, 0.2);
+}
+
+/* Minimalist "Elite" Variant — Flat, Clean, & Professional */
+:root[data-app-style="minimal"] {
+  --bg-app: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-sidebar: #FFFFFF;
+  --bg-glass: #FFFFFF;
+
+  --primary-brand: #0F172A;
+  --primary-light: #334155;
+  --primary-dark: #020617;
+
+  --border-color: #E2E8F0;
+  --border-glow: #CBD5E1;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glow: none;
+  --shadow-glow-emerald: none;
+
+  --radius-base: 0.75rem;
+
+  line-height: 1.6;
+  letter-spacing: -0.011em;
+}
+
+.dark[data-app-style="minimal"] {
+  --bg-app: #0F172A;
+  --bg-card: #1E293B;
+  --bg-sidebar: #0F172A;
+  --bg-glass: #1E293B;
+
+  --primary-brand: #F8FAFC;
+  --primary-light: #CBD5E1;
+  --primary-dark: #FFFFFF;
+
+  --border-color: #334155;
+  --border-glow: #475569;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  --shadow-glow: none;
+  --shadow-glow-emerald: none;
+}
+
+/* Component Overrides for Minimalist Style */
+[data-app-style="minimal"] body::before {
+  display: none;
+  /* Remove background glows */
+}
+
+[data-app-style="minimal"] .glass,
+[data-app-style="minimal"] .glass-panel,
+[data-app-style="minimal"] .stat-card-modern,
+[data-app-style="minimal"] .welcome-header,
+[data-app-style="minimal"] .sidebar {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-app-style="minimal"] .glass-panel::before,
+[data-app-style="minimal"] .welcome-header::after,
+[data-app-style="minimal"] .sidebar::after {
+  display: none;
+  /* Remove accent hair lines */
+}
+
+[data-app-style="minimal"] .glass-panel:hover,
+[data-app-style="minimal"] .stat-card-modern:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-brand);
+}
+
+[data-app-style="minimal"] .stat-card-modern::after {
+  display: none;
+  /* Remove radial glows in cards */
+}
+
+[data-app-style="minimal"] .text-gradient {
+  background: none;
+  -webkit-text-fill-color: initial;
+  background-clip: initial;
+  color: var(--primary-brand);
+}
+
+[data-app-style="minimal"] .sidebar-nav-item.active {
+  background: var(--primary-brand);
+  color: var(--bg-app);
+  box-shadow: none;
+  transform: none;
+}
+
+[data-app-style="minimal"] .sidebar-nav-item:hover:not(.active) {
+  background: var(--bg-app);
+  color: var(--primary-brand);
+}
+
+[data-app-style="minimal"] .input-modern,
+[data-app-style="minimal"] .input-field {
+  background: var(--bg-app);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  box-shadow: none;
+}
+
+[data-app-style="minimal"] .input-modern:focus,
+[data-app-style="minimal"] .input-field:focus {
+  border-color: var(--primary-brand);
+  background: var(--bg-card);
+  box-shadow: none;
+}
+
+/* Clean Global Overrides for Minimalist Mode */
+[data-app-style="minimal"] .shadow-lg,
+[data-app-style="minimal"] .shadow-xl,
+[data-app-style="minimal"] .shadow-2xl {
+  box-shadow: var(--shadow-sm) !important;
+}
+
+[data-app-style="minimal"] .animate-ping,
+[data-app-style="minimal"] .animate-pulse {
+  animation: none !important;
+}
+
+/* Neutralizing "Vibrant" Tailwind Components */
+[data-app-style="minimal"] .bg-gradient-to-br,
+[data-app-style="minimal"] .bg-gradient-to-r,
+[data-app-style="minimal"] .bg-gradient-to-tr,
+[data-app-style="minimal"] .bg-gradient-to-b,
+[data-app-style="minimal"] .bg-gradient-to-t {
+  background-image: none !important;
+}
+
+[data-app-style="minimal"] .from-cyan-500,
+[data-app-style="minimal"] .from-blue-500,
+[data-app-style="minimal"] .from-emerald-500 {
+  background-color: var(--primary-brand) !important;
+  color: var(--bg-app) !important;
+}
+
+[data-app-style="minimal"] .to-blue-500,
+[data-app-style="minimal"] .to-cyan-500,
+[data-app-style="minimal"] .to-teal-500 {
+  background-color: var(--primary-brand) !important;
+}
+
+[data-app-style="minimal"] .text-cyan-600,
+[data-app-style="minimal"] .text-blue-600,
+[data-app-style="minimal"] .text-emerald-600 {
+  color: var(--primary-brand) !important;
+}
+
+[data-app-style="minimal"] .bg-cyan-50,
+[data-app-style="minimal"] .bg-blue-50,
+[data-app-style="minimal"] .bg-emerald-50 {
+  background-color: var(--bg-app) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* Re-allowing semantic colors for status */
+[data-app-style="minimal"] .bg-emerald-500 {
+  background-color: #10B981 !important;
+  color: white !important;
+}
+
+[data-app-style="minimal"] .bg-amber-500 {
+  background-color: #F59E0B !important;
+  color: white !important;
+}
+
+[data-app-style="minimal"] .bg-rose-500 {
+  background-color: #EF4444 !important;
+  color: white !important;
 }
 
 /* Global Reset */
@@ -270,7 +449,7 @@ body::before {
 /* Input Fields - Modern */
 .input-modern {
   width: 100%;
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1rem;
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(148, 163, 184, 0.3);
@@ -298,7 +477,7 @@ body::before {
 
 .input-field {
   width: 100%;
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1rem;
   border-radius: 1rem;
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(148, 163, 184, 0.3);
@@ -428,7 +607,7 @@ body::before {
 
 /* Header */
 .welcome-header {
-  @apply flex items-center justify-between p-6 md:p-8;
+  @apply flex items-center justify-between p-3 md:p-5;
   background: var(--bg-glass);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -495,7 +674,12 @@ body::before {
   transition: all 0.5s ease;
   position: relative;
   overflow: hidden;
-  padding: 2rem;
+  padding: 1.25rem;
+
+  @screen md {
+    padding: 1.5rem;
+  }
+
   cursor: pointer;
 }
 
@@ -558,4 +742,40 @@ body::before {
   .no-print {
     display: none !important;
   }
+}
+
+/* ECG / Heartbeat Animation */
+@keyframes ecg-scan {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes pulse-dot {
+
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.ecg-line-scan {
+  animation: ecg-scan 3s linear infinite;
+}
+
+.medical-grid {
+  background-image:
+    linear-gradient(var(--border-color) 0.5px, transparent 0.5px),
+    linear-gradient(90deg, var(--border-color) 0.5px, transparent 0.5px);
+  background-size: 30px 30px;
 }

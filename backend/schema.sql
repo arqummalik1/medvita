@@ -236,7 +236,23 @@ create policy "Any authenticated user can view files"
 on storage.objects for select
 using ( bucket_id = 'medvita-files' and auth.role() = 'authenticated' );
 
--- 7. Auto-create profile on new user
+-- 7. Performance Indexes (critical for 100k+ patients)
+create index if not exists idx_patients_doctor_id on patients(doctor_id);
+create index if not exists idx_patients_email on patients(email);
+create index if not exists idx_patients_user_id on patients(user_id);
+create index if not exists idx_appointments_doctor_id on appointments(doctor_id);
+create index if not exists idx_appointments_patient_id on appointments(patient_id);
+create index if not exists idx_appointments_date on appointments(date);
+create index if not exists idx_appointments_doctor_date on appointments(doctor_id, date);
+create index if not exists idx_appointments_status on appointments(status);
+create index if not exists idx_prescriptions_patient_id on prescriptions(patient_id);
+create index if not exists idx_prescriptions_doctor_id on prescriptions(doctor_id);
+create index if not exists idx_doctor_availability_doctor_id on doctor_availability(doctor_id);
+create index if not exists idx_profiles_clinic_code on profiles(clinic_code);
+create index if not exists idx_profiles_employer_id on profiles(employer_id);
+create index if not exists idx_profiles_role on profiles(role);
+
+-- 8. Auto-create profile on new user
 create or replace function public.handle_new_user()
 returns trigger as $$
 declare
@@ -249,7 +265,7 @@ begin
   
   -- If it's a receptionist and they provided a code, find the doctor
   if v_role = 'receptionist' and v_clinic_code is not null then
-    select id into v_employer_id from public.profiles where clinic_code = v_clinic_code and role = 'doctor' limit 1;
+    select id into v_employer_id from public.profiles where clinic_code = v_clinic_code and role = 'doctor' order by created_at asc limit 1;
   end if;
 
   insert into public.profiles (id, email, role, full_name, employer_id)
@@ -271,3 +287,125 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
 after insert on auth.users
 for each row execute function public.handle_new_user();
+
+-- ============================================================
+-- 9. Subscription System Tables
+-- ============================================================
+
+-- Add subscription fields to profiles
+do $$
+begin
+  if not exists (select 1 from information_schema.columns where table_name = 'profiles' and column_name = 'subscription_plan') then
+    alter table profiles add column subscription_plan text default 'free' check (subscription_plan in ('free', 'pro'));
+  end if;
+  if not exists (select 1 from information_schema.columns where table_name = 'profiles' and column_name = 'subscription_status') then
+    alter table profiles add column subscription_status text default 'active' check (subscription_status in ('active', 'expired', 'cancelled'));
+  end if;
+end $$;
+
+-- Subscription Plans (definitions)
+create table if not exists subscription_plans (
+  id uuid default uuid_generate_v4() primary key,
+  name text not null check (name in ('free', 'pro')),
+  display_name text not null,
+  description text,
+  price_inr integer not null default 0, -- in paisa (e.g. 99900 = ₹999)
+  billing_cycle text check (billing_cycle in ('monthly', 'annual')) default 'monthly',
+  feature_limits jsonb not null default '{}'::jsonb,
+  is_active boolean default true,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+-- Seed default plans
+insert into subscription_plans (name, display_name, description, price_inr, billing_cycle, feature_limits) values
+  ('free', 'Standard', 'Basic features for getting started', 0, 'monthly',
+   '{"max_patients": 10, "max_appointments_per_month": 20, "max_prescriptions_per_month": 10, "max_receptionists": 0, "earnings_access": false, "chatbot_access": false, "email_prescriptions": false}'::jsonb),
+  ('pro', 'Professional', 'Full access to all features', 99900, 'monthly',
+   '{"max_patients": -1, "max_appointments_per_month": -1, "max_prescriptions_per_month": -1, "max_receptionists": 3, "earnings_access": true, "chatbot_access": true, "email_prescriptions": true}'::jsonb)
+on conflict do nothing;
+
+-- User Subscriptions (tracks active subscription per doctor)
+create table if not exists user_subscriptions (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references auth.users(id) on delete cascade not null,
+  plan_id uuid references subscription_plans(id) not null,
+  status text default 'active' check (status in ('active', 'expired', 'cancelled', 'pending')),
+  razorpay_subscription_id text unique,
+  razorpay_customer_id text,
+  start_date timestamp with time zone default timezone('utc'::text, now()) not null,
+  end_date timestamp with time zone,
+  next_billing_date timestamp with time zone,
+  auto_renew boolean default true,
+  cancel_reason text,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+create index if not exists idx_user_subscriptions_user_id on user_subscriptions(user_id);
+create index if not exists idx_user_subscriptions_status on user_subscriptions(status);
+
+-- Transactions (payment records)
+create table if not exists transactions (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references auth.users(id) on delete cascade not null,
+  subscription_id uuid references user_subscriptions(id),
+  razorpay_payment_id text unique,
+  amount_inr integer not null, -- in paisa
+  currency text default 'INR',
+  status text default 'pending' check (status in ('success', 'pending', 'failed', 'refunded')),
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+create index if not exists idx_transactions_user_id on transactions(user_id);
+
+-- Feature Usage (monthly counters for free tier enforcement)
+create table if not exists feature_usage (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references auth.users(id) on delete cascade not null,
+  feature_name text not null,
+  usage_count integer default 0,
+  period_start date not null default date_trunc('month', current_date)::date,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  unique(user_id, feature_name, period_start)
+);
+
+create index if not exists idx_feature_usage_user_period on feature_usage(user_id, period_start);
+
+-- RLS for subscription tables
+alter table subscription_plans enable row level security;
+alter table user_subscriptions enable row level security;
+alter table transactions enable row level security;
+alter table feature_usage enable row level security;
+
+-- Everyone can read plans
+create policy "Anyone can view subscription plans"
+  on subscription_plans for select
+  using (true);
+
+-- Users can only see their own subscription
+create policy "Users can view their own subscriptions"
+  on user_subscriptions for select
+  using (auth.uid() = user_id);
+
+-- Users can only see their own transactions
+create policy "Users can view their own transactions"
+  on transactions for select
+  using (auth.uid() = user_id);
+
+-- Users can see their own usage
+create policy "Users can view their own usage"
+  on feature_usage for select
+  using (auth.uid() = user_id);
+
+-- Service role can manage all (for edge functions)
+create policy "Service role manages subscriptions"
+  on user_subscriptions for all
+  using (auth.role() = 'service_role');
+
+create policy "Service role manages transactions"
+  on transactions for all
+  using (auth.role() = 'service_role');
+
+create policy "Service role manages usage"
+  on feature_usage for all
+  using (auth.role() = 'service_role');

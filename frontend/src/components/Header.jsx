@@ -48,29 +48,29 @@ export default function Header({ onMenuClick }) {
                     </button>
 
                     {/* App Icon — Cyan to Emerald gradient */}
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 via-teal-500 to-emerald-500 flex items-center justify-center shadow-xl shadow-cyan-500/30 dark:shadow-cyan-500/20 relative overflow-hidden group">
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gradient-to-br from-cyan-500 via-teal-500 to-emerald-500 flex items-center justify-center shadow-xl shadow-cyan-500/30 dark:shadow-cyan-500/20 relative overflow-hidden group">
                         <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
-                        <Activity className="text-white w-7 h-7 relative z-10 group-hover:scale-110 transition-transform duration-300" />
+                        <Activity className="text-white w-5 h-5 md:w-6 md:h-6 relative z-10 group-hover:scale-110 transition-transform duration-300" />
                         <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/0 to-emerald-400/0 group-hover:from-cyan-400/30 group-hover:to-emerald-400/30 transition-all duration-500" />
                     </div>
 
                     {/* Welcome Text */}
                     <div className="hidden sm:block">
-                        <h1 className="text-2xl md:text-3xl font-normal text-slate-800 dark:text-white tracking-tight">
+                        <h1 className="text-xl md:text-2xl font-normal text-slate-800 dark:text-white tracking-tight">
                             Welcome Back, <span className="font-bold bg-gradient-to-r from-cyan-600 to-blue-600 dark:from-cyan-400 dark:to-blue-400 bg-clip-text text-transparent">{profile?.full_name?.split(' ')[0] || 'User'}</span>!
                         </h1>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">Here's what's happening today.</p>
+                        <p className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">Here's what's happening today.</p>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-6">
                     {/* Search Bar */}
-                    <div className="hidden md:flex items-center bg-white/50 dark:bg-slate-800/50 backdrop-blur-xl rounded-2xl px-4 py-3 w-80 focus-within:ring-2 focus-within:ring-cyan-500/50 dark:focus-within:ring-cyan-400/50 border border-slate-200/50 dark:border-slate-700/50 transition-all shadow-lg hover:shadow-xl hover:border-cyan-300 dark:hover:border-cyan-600 group">
-                        <Search className="h-5 w-5 text-slate-400 group-focus-within:text-cyan-500 dark:group-focus-within:text-cyan-400 mr-2 transition-colors" />
+                    <div className="hidden md:flex items-center bg-white/50 dark:bg-slate-800/50 backdrop-blur-xl rounded-xl px-3 py-2 w-64 lg:w-80 focus-within:ring-2 focus-within:ring-cyan-500/50 dark:focus-within:ring-cyan-400/50 border border-slate-200/50 dark:border-slate-700/50 transition-all shadow-lg hover:shadow-xl hover:border-cyan-300 dark:hover:border-cyan-600 group">
+                        <Search className="h-4 w-4 text-slate-400 group-focus-within:text-cyan-500 dark:group-focus-within:text-cyan-400 mr-2 transition-colors" />
                         <input
                             type="text"
                             placeholder="Search Patients..."
-                            className="bg-transparent border-none outline-none text-sm w-full placeholder-slate-400 text-slate-700 dark:text-white focus:placeholder-slate-300 dark:focus:placeholder-slate-500"
+                            className="bg-transparent border-none outline-none text-xs w-full placeholder-slate-400 text-slate-700 dark:text-white focus:placeholder-slate-300 dark:focus:placeholder-slate-500"
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     navigate(`/dashboard/patients?search=${encodeURIComponent(e.target.value)}`);
@@ -91,15 +91,15 @@ export default function Header({ onMenuClick }) {
                         </button>
 
                         <Menu as="div" className="relative">
-                            <Menu.Button className="flex items-center gap-3 outline-none group">
+                            <Menu.Button className="flex items-center gap-2 outline-none group text-left">
                                 {/* Avatar — cyan to blue */}
-                                <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 text-white flex items-center justify-center font-bold shadow-lg shadow-cyan-500/30 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-cyan-500/50 transition-all duration-300 border-2 border-white/20 dark:border-slate-700/50 relative overflow-hidden">
+                                <div className="h-9 w-9 md:h-10 md:w-10 rounded-xl md:rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 text-white flex items-center justify-center font-bold shadow-lg shadow-cyan-500/30 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-cyan-500/50 transition-all duration-300 border-2 border-white/20 dark:border-slate-700/50 relative overflow-hidden">
                                     <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
-                                    <span className="relative z-10">{profile?.full_name?.charAt(0) || 'U'}</span>
+                                    <span className="relative z-10 text-sm md:text-base">{profile?.full_name?.charAt(0) || 'U'}</span>
                                 </div>
-                                <div className="hidden md:block text-left">
-                                    <p className="text-sm font-bold text-slate-900 dark:text-white leading-none">{profile?.full_name || 'User'}</p>
-                                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 font-semibold uppercase tracking-wider">{profile?.role === 'doctor' ? '👨‍⚕️ Doctor' : '👤 Patient'}</p>
+                                <div className="hidden md:block">
+                                    <p className="text-xs font-bold text-slate-900 dark:text-white leading-none">{profile?.full_name || 'User'}</p>
+                                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-semibold uppercase tracking-wider">{profile?.role === 'doctor' ? '👨‍⚕️ Doctor' : '👤 Patient'}</p>
                                 </div>
                                 <ChevronDown className="h-4 w-4 text-slate-400 hidden md:block group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors group-hover:rotate-180 duration-300" />
                             </Menu.Button>

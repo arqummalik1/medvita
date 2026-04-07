@@ -1,6 +1,6 @@
 import { useState, Fragment, useEffect } from 'react'
 import { Dialog, Transition, RadioGroup, Switch } from '@headlessui/react'
-import { X, Moon, Sun, Monitor, Type, Layout, Bell, Calendar, Settings, FileText, Save, Loader2, Key, Copy, RefreshCw, Check } from 'lucide-react'
+import { X, Moon, Sun, Monitor, Type, Layout, Bell, Calendar, Settings, FileText, Save, Loader2, Key, Copy, RefreshCw, Check, Activity } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabaseClient'
@@ -8,7 +8,7 @@ import { signInToGoogle, signOutFromGoogle, initializeGoogleAPI } from '../lib/g
 import clsx from 'clsx'
 
 export default function SettingsModal({ isOpen, onClose }) {
-    const { theme, toggleTheme, density, setDensity } = useTheme()
+    const { theme, toggleTheme, density, setDensity, appStyle, setAppStyle } = useTheme()
     const { user, profile, fetchProfile } = useAuth()
 
     // Notifications State
@@ -123,10 +123,14 @@ export default function SettingsModal({ isOpen, onClose }) {
         }
     }
 
-    const generateClinicCode = async () => {
+    const generateClinicCode = async (retries = 0) => {
+        if (retries > 3) {
+            alert('Failed to generate a unique code after multiple attempts. Please try again.')
+            setIsGeneratingCode(false)
+            return
+        }
         setIsGeneratingCode(true)
         try {
-            // Generate a random 6 character alphanumeric code
             const newCode = Math.random().toString(36).substring(2, 8).toUpperCase()
             const { error } = await supabase
                 .from('profiles')
@@ -135,8 +139,7 @@ export default function SettingsModal({ isOpen, onClose }) {
 
             if (error) {
                 if (error.code === '23505') {
-                    // Unique constraint violation - rare but possible, just retry once
-                    return generateClinicCode()
+                    return generateClinicCode(retries + 1)
                 }
                 throw error
             }
@@ -255,6 +258,47 @@ export default function SettingsModal({ isOpen, onClose }) {
                                                     >
                                                         <Moon className="h-4 w-4" />
                                                         <span className="font-bold text-xs">Dark</span>
+                                                    </button>
+                                                </div>
+                                            </section>
+
+                                            <div className="h-px bg-slate-100 dark:bg-slate-700/50" />
+
+                                            {/* Design Style Section */}
+                                            <section>
+                                                <h4 className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                                                    <Layout className="h-3 w-3" /> Workspace Style
+                                                </h4>
+                                                <div className="grid grid-cols-2 gap-3">
+                                                    <button
+                                                        onClick={() => setAppStyle('modern')}
+                                                        className={clsx(
+                                                            "flex flex-col items-center justify-center text-center gap-2 p-3 rounded-lg border transition-all duration-200",
+                                                            appStyle === 'modern'
+                                                                ? "border-cyan-500 bg-cyan-50 dark:bg-cyan-900/10 text-cyan-700 dark:text-cyan-400 ring-1 ring-cyan-500 shadow-sm"
+                                                                : "border-slate-200 dark:border-slate-700 hover:border-cyan-200 dark:hover:border-cyan-800 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800/30"
+                                                        )}
+                                                    >
+                                                        <Activity className="h-4 w-4" />
+                                                        <div className="flex flex-col">
+                                                            <span className="font-bold text-xs">Modern</span>
+                                                            <span className="text-[10px] opacity-70">Vibrant & Glassy</span>
+                                                        </div>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setAppStyle('minimal')}
+                                                        className={clsx(
+                                                            "flex flex-col items-center justify-center text-center gap-2 p-3 rounded-lg border transition-all duration-200",
+                                                            appStyle === 'minimal'
+                                                                ? "border-slate-900 dark:border-slate-100 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 ring-1 ring-slate-900 dark:ring-slate-100 shadow-sm"
+                                                                : "border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800/30"
+                                                        )}
+                                                    >
+                                                        <Type className="h-4 w-4" />
+                                                        <div className="flex flex-col">
+                                                            <span className="font-bold text-xs">Minimal</span>
+                                                            <span className="text-[10px] opacity-70">Pure & Focused</span>
+                                                        </div>
                                                     </button>
                                                 </div>
                                             </section>

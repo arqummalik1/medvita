@@ -1,0 +1,17 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:5173",
+  "executionArgs": {
+    "projectName": "frontend",
+    "projectPath": "/Users/arqummalik/Documents/trae_projects/MedVita/frontend",
+    "testIds": [],
+    "additionalInstruction": "",
+    "envs": {
+      "API_KEY": "sk-user-ptp08jpAKVuy7IiF0JjT-A7p2btsjrldREXirXGPDFcy9XRVMMzTjgDwgsOZZlg7k_cn_fHXh2hd3KxkLfWc_XJFyAVV9uL0fZuAd3Ws7H_W2_W5G64sU1AM54BCL2yxrak"
+    }
+  },
+  "serverPort": 51783,
+  "proxy": "http://54aed821-8c94-4c23-b0b4-d257b31933d5:KsAaUaN1gZoGYASl0h9d5y8WGRtrg8gn@tun.testsprite.com:8080"
+}

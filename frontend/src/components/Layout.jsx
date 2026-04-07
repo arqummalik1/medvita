@@ -24,7 +24,7 @@ export default function Layout({ children }) {
         <main className="flex-1 flex flex-col min-h-screen min-w-0 bg-transparent">
           <Header onMenuClick={() => setSidebarOpen(true)} />
 
-          <div className="dashboard-content flex-1 overflow-y-auto p-6 md:p-8 animate-enter">
+          <div className="dashboard-content flex-1 overflow-y-auto p-4 md:p-6 animate-enter">
             {children}
           </div>
         </main>

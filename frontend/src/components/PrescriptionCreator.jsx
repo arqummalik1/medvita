@@ -207,7 +207,7 @@ export default function PrescriptionCreator({ isOpen, setIsOpen, patient, onSucc
       )}
 
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="mx-auto max-w-lg rounded-3xl glass-panel p-8 shadow-2xl w-full">
+        <Dialog.Panel className="mx-auto max-w-lg rounded-3xl glass-panel p-6 sm:p-8 shadow-2xl w-full">
           {success ? (
             <div className="text-center py-10">
               <div className="mx-auto flex items-center justify-center h-20 w-20 rounded-full bg-green-100 dark:bg-green-900/30 shadow-inner mb-6">

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your Signup - MedVita</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #F8FAFC;
+            color: #0F172A;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .wrapper {
+            width: 100%;
+            table-layout: fixed;
+            background-color: #F8FAFC;
+            padding-bottom: 40px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-top: 40px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .header {
+            padding: 40px 40px 20px;
+            text-align: center;
+        }
+
+        .logo-container {
+            display: inline-block;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #06B6D4 0%, #10B981 100%);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 10px 15px -3px rgba(6, 182, 212, 0.3);
+        }
+
+        .logo-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .content {
+            padding: 20px 40px 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        h1 span {
+            background: linear-gradient(90deg, #06B6D4, #3B82F6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #475569;
+            margin-bottom: 32px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #06B6D4 0%, #10B981 100%);
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 16px 36px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 10px 15px -3px rgba(6, 182, 212, 0.25);
+            transition: transform 0.2s ease;
+        }
+
+        .footer {
+            padding: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #94A3B8;
+        }
+
+        .footer-links {
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: #64748B;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            color: #06B6D4;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #E2E8F0;
+            margin: 20px 0;
+        }
+
+        /* Responsive adjustments */
+        @media screen and (max-width: 600px) {
+            .container {
+                margin-top: 20px;
+                border-radius: 16px;
+            }
+            .header, .content, .footer {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <div class="logo-container">
+                    <svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 12 L12 20 L16 10 L20 18 L24 12" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div style="margin-top: 12px; font-weight: 700; font-size: 20px; color: #0F172A; letter-spacing: -0.01em;">
+                    MedVita
+                </div>
+            </div>
+
+            <div class="content">
+                <h1>Welcome to <span>MedVita</span></h1>
+                <p> We're excited to have you on board! To get started and protect your account, please confirm your email address by clicking the button below.</p>
+                
+                <a href="{{ .ConfirmationURL }}" class="btn">Confirm Email Address</a>
+
+                <div class="divider"></div>
+                
+                <p style="font-size: 14px; margin-bottom: 0;">If the button above doesn't work, you can copy and paste the following link into your browser:</p>
+                <p style="font-size: 13px; color: #64748B; word-break: break-all; margin-top: 8px;">
+                    {{ .ConfirmationURL }}
+                </p>
+            </div>
+
+            <div class="footer">
+                <div class="footer-links">
+                    <a href="#">Help Center</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+                <p style="margin: 0;">&copy; 2026 MedVita. All rights reserved.<br>Built with &hearts; for modern healthcare.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

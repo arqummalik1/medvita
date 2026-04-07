@@ -1,0 +1,3596 @@
+[
+  {
+    "id": "TC001",
+    "title": "Patient can sign up successfully and land on dashboard",
+    "description": "Verifies a new patient can complete signup with valid details and is redirected into the dashboard.",
+    "category": "Patient Signup",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Sign Up\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Test Patient\" into the full name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"test.patient.unique1@example.com\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"5551234567\" into the phone field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"1990-01-15\" into the date of birth field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the confirm password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign Up\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Dashboard\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Signup shows error when confirm password does not match",
+    "description": "Verifies password mismatch is detected and signup is blocked with a visible validation message.",
+    "category": "Patient Signup",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Sign Up\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Mismatch User\" into the full name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"mismatch.user.unique2@example.com\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"DifferentPass!234\" into the confirm password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign Up\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"password\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"match\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Signup requires full name",
+    "description": "Verifies the form blocks submission and shows a visible validation error when full name is missing.",
+    "category": "Patient Signup",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "action",
+        "description": "Type \"missing.name.unique3@example.com\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"5551112222\" into the phone field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"1992-05-10\" into the date of birth field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the confirm password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign Up\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"name\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"required\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Signup requires email",
+    "description": "Verifies the form blocks submission and shows a visible validation error when email is missing.",
+    "category": "Patient Signup",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "action",
+        "description": "Type \"No Email User\" into the full name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"5552223333\" into the phone field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"1995-08-20\" into the date of birth field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the confirm password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign Up\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"email\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"required\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Signup rejects invalid email format",
+    "description": "Verifies an invalid email address triggers a visible validation error and prevents signup.",
+    "category": "Patient Signup",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Invalid Email User\" into the full name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"not-an-email\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"5553334444\" into the phone field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"1991-03-12\" into the date of birth field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the confirm password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign Up\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"email\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"valid\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Signup requires password",
+    "description": "Verifies the form blocks submission and shows a visible validation error when password is missing.",
+    "category": "Patient Signup",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "action",
+        "description": "Type \"No Password User\" into the full name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"no.password.unique6@example.com\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"5554445555\" into the phone field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"1994-11-02\" into the date of birth field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the confirm password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign Up\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"password\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"required\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Signup requires confirm password",
+    "description": "Verifies the form blocks submission and shows a visible validation error when confirm password is missing.",
+    "category": "Patient Signup",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "action",
+        "description": "Type \"No Confirm User\" into the full name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"no.confirm.unique7@example.com\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"5556667777\" into the phone field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"1993-09-19\" into the date of birth field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign Up\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"confirm\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"required\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Signup rejects clearly invalid date of birth input",
+    "description": "Verifies the date of birth field validation triggers a visible error for an invalid date and prevents signup.",
+    "category": "Patient Signup",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Bad DOB User\" into the full name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"bad.dob.unique8@example.com\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"5557778888\" into the phone field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"not-a-date\" into the date of birth field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the confirm password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign Up\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"date\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"valid\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Receptionist signup shows error for invalid staff code",
+    "description": "Verifies the form blocks registration and shows an error when the staff code is invalid.",
+    "category": "Receptionist Signup",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /staff-signup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Staff code\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Test Receptionist\" into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"receptionist.invalidcode+1@example.com\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"WRONG-CODE\" into the staff code field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Create Account\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Invalid\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Receptionist signup requires name (blank name validation)",
+    "description": "Verifies the signup form prevents submission when the name field is empty.",
+    "category": "Receptionist Signup",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /staff-signup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Name\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Type \"receptionist.noname+1@example.com\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"123456\" into the staff code field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Create Account\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Name\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Receptionist signup requires email (blank email validation)",
+    "description": "Verifies the signup form prevents submission when the email field is empty.",
+    "category": "Receptionist Signup",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /staff-signup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Email\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Test Receptionist\" into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"123456\" into the staff code field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Create Account\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Email\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Receptionist signup validates email format",
+    "description": "Verifies the form rejects an improperly formatted email address.",
+    "category": "Receptionist Signup",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /staff-signup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Email\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Test Receptionist\" into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"not-an-email\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"123456\" into the staff code field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Create Account\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"email\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Receptionist signup requires staff code (blank staff code validation)",
+    "description": "Verifies the signup form prevents submission when the staff code field is empty.",
+    "category": "Receptionist Signup",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /staff-signup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Staff code\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Test Receptionist\" into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"receptionist.nocode+1@example.com\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"ValidPass!234\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Create Account\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Staff code\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Receptionist signup requires password (blank password validation)",
+    "description": "Verifies the signup form prevents submission when the password field is empty.",
+    "category": "Receptionist Signup",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /staff-signup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Password\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Test Receptionist\" into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"receptionist.nopass+1@example.com\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"123456\" into the staff code field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Create Account\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Password\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Doctor sees key dashboard sections on Dashboard Home",
+    "description": "Verifies that a logged-in doctor can view stats cards, upcoming appointments, engagement charts, and the Live Queue panel on the Dashboard Home.",
+    "category": "Dashboard Home",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Patients\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Appointments\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Live Queue\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Dashboard stats cards display for authenticated user",
+    "description": "Verifies that the Dashboard Home shows the three core statistic cards for an authenticated user.",
+    "category": "Dashboard Home",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Patients\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Appointments\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Prescriptions\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "Upcoming appointments list is visible on Dashboard Home",
+    "description": "Verifies that the Dashboard Home includes a visible upcoming appointments section for an authenticated user.",
+    "category": "Dashboard Home",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Upcoming\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Appointments\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Upcoming appointments list\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC018",
+    "title": "Doctor engagement charts are visible on Dashboard Home",
+    "description": "Verifies that a doctor can see the engagement charts section on the Dashboard Home.",
+    "category": "Dashboard Home",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Engagement\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Patient engagement chart\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Sparkline chart\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC019",
+    "title": "Dashboard loads without persistent loading spinner",
+    "description": "Verifies that the Dashboard Home finishes loading and renders dashboard content (not stuck on a spinner).",
+    "category": "Dashboard Home",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Loading\" is not visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Patients\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC020",
+    "title": "Invalid password prevents access to Dashboard Home",
+    "description": "Verifies that incorrect credentials do not allow access to the dashboard and show an error on the login page.",
+    "category": "Dashboard Home",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"fake.user@invalid.example\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"WrongPassword123!\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/login\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Invalid\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Login form\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC021",
+    "title": "Unauthorized session shows protected-route handling when attempting dashboard access",
+    "description": "Verifies that when a session cannot be established, the user is prevented from using the dashboard and is redirected to login or shown a protected-route error.",
+    "category": "Dashboard Home",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"nonexistent.user@invalid.example\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"NotARealPassword!\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Loading\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/login\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Login form\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC022",
+    "title": "Book a new appointment from Week View as a patient (doctor selection present)",
+    "description": "Verifies a logged-in user can open the booking modal from Week View and confirm a new appointment that appears in the calendar/list.",
+    "category": "Appointment Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Appointments\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/appointments\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Week\" view selector"
+      }
+    ]
+  },
+  {
+    "id": "TC023",
+    "title": "Open booking modal from a time slot in Week View",
+    "description": "Verifies clicking a calendar time slot opens the booking modal with expected booking fields visible.",
+    "category": "Appointment Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Appointments\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Week\" view selector"
+      },
+      {
+        "type": "action",
+        "description": "Click an available time slot in the calendar grid"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Book Appointment\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC024",
+    "title": "Confirm booking creates a new appointment entry visible in the appointment list/calendar",
+    "description": "Verifies confirming a booking in the modal results in a visible new appointment entry.",
+    "category": "Appointment Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Appointments\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Week\" view selector"
+      },
+      {
+        "type": "action",
+        "description": "Click an available time slot in the calendar grid"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Confirm\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the doctor dropdown"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Select doctor\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC025",
+    "title": "Filter appointments by status (Pending)",
+    "description": "Verifies the appointments list can be filtered to show only pending appointments.",
+    "category": "Appointment Management",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Appointments\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/appointments\""
+      },
+      {
+        "type": "action",
+        "description": "Click the status filter control"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Pending\" from the status dropdown"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Pending\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC026",
+    "title": "View appointment details from the appointments list",
+    "description": "Verifies an appointment entry can be opened to view its details.",
+    "category": "Appointment Management",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Appointments\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click an appointment entry in the list (not a header row)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Appointment Details\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Status\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC027",
+    "title": "Doctor updates a pending appointment to Confirmed (if action buttons available)",
+    "description": "Verifies a doctor can change a pending appointment status to confirmed and see the updated status in UI.",
+    "category": "Appointment Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Appointments\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click the status filter control"
+      },
+      {
+        "type": "action",
+        "description": "Select \"Pending\" from the status dropdown"
+      },
+      {
+        "type": "action",
+        "description": "Click an appointment entry that shows an \"Approve\" or \"Confirm\" action"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Approve\" or \"Confirm\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Confirmed\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC028",
+    "title": "Doctor cancels an appointment and sees Cancelled status",
+    "description": "Verifies a doctor can cancel an appointment and the UI reflects the cancelled state.",
+    "category": "Appointment Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Appointments\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click an appointment entry that shows a \"Cancel\" action"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Cancel\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Cancelled\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC029",
+    "title": "Attempt to confirm booking on an already-taken slot shows conflict/unavailable error",
+    "description": "Verifies the app prevents booking conflicts and displays a visible error message when the selected slot is unavailable.",
+    "category": "Appointment Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Appointments\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Week\" view selector"
+      },
+      {
+        "type": "action",
+        "description": "Click a time slot that is already booked (shows an existing appointment)"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Confirm\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"slot unavailable\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC030",
+    "title": "Open patient details and start creating a prescription from the patient drawer",
+    "description": "Verifies a doctor can search for a patient, open the details drawer, and launch the prescription creation modal with patient context pre-filled.",
+    "category": "Patient Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Patients\" in the dashboard navigation menu"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/patients\""
+      },
+      {
+        "type": "action",
+        "description": "Type \"Ann\" into the patient search field"
+      },
+      {
+        "type": "action",
+        "description": "Click on the first patient row in the results list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Patient Details\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Create Prescription\" button in the patient details drawer"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Create Prescription\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC031",
+    "title": "Add patient shows validation error when Age is missing",
+    "description": "Verifies required field validation prevents saving a patient when Age is empty.",
+    "category": "Patient Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Patients\" in the dashboard navigation menu"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/patients\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Add Patient\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Add Patient\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Test Patient\" into the Full Name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"\" into the Age field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Age\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC032",
+    "title": "Patient search returns matching results and filters the visible list",
+    "description": "Verifies searching by name narrows down the patient list and shows matching entries.",
+    "category": "Patient Management",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Patients\" in the dashboard navigation menu"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/patients\""
+      },
+      {
+        "type": "action",
+        "description": "Type \"a\" into the patient search field"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Patients\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Type \"zzzz\" into the patient search field"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"No patients\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC033",
+    "title": "Open a patient drawer and view medical history section",
+    "description": "Verifies selecting a patient shows the details drawer with medical history content visible.",
+    "category": "Patient Management",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Patients\" in the dashboard navigation menu"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/patients\""
+      },
+      {
+        "type": "action",
+        "description": "Click on the first patient row in the results list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Patient Details\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Medical History\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC034",
+    "title": "Add notes to a patient record from the details drawer",
+    "description": "Verifies a doctor can add a note in the patient details view and see it displayed after saving.",
+    "category": "Patient Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Patients\" in the dashboard navigation menu"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/patients\""
+      },
+      {
+        "type": "action",
+        "description": "Click on the first patient row in the results list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Patient Details\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Follow-up required in 2 weeks\" into the Notes field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save Notes\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Follow-up required in 2 weeks\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC035",
+    "title": "View patient appointments list from within patient details",
+    "description": "Verifies the patient details drawer exposes an appointments section with visible content.",
+    "category": "Patient Management",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Patients\" in the dashboard navigation menu"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/patients\""
+      },
+      {
+        "type": "action",
+        "description": "Click on the first patient row in the results list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Patient Details\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Appointments\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC036",
+    "title": "View patient prescriptions list from within patient details",
+    "description": "Verifies the patient details drawer exposes a prescriptions section with visible content.",
+    "category": "Patient Management",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Patients\" in the dashboard navigation menu"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/patients\""
+      },
+      {
+        "type": "action",
+        "description": "Click on the first patient row in the results list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Patient Details\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Prescriptions\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC037",
+    "title": "Close patient details drawer using the close control",
+    "description": "Verifies the patient details drawer can be dismissed and the patient list remains visible.",
+    "category": "Patient Management",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Patients\" in the dashboard navigation menu"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/patients\""
+      },
+      {
+        "type": "action",
+        "description": "Click on the first patient row in the results list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Patient Details\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Close\" button on the patient details drawer"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Patient Details\" is not visible"
+      }
+    ]
+  },
+  {
+    "id": "TC038",
+    "title": "Save a valid availability schedule for Monday (success confirmation)",
+    "description": "Verifies a doctor can enable Monday, set a valid start/end time, save, and see a success confirmation.",
+    "category": "Doctor Availability Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Availability\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/availability\""
+      },
+      {
+        "type": "action",
+        "description": "Toggle availability for \"Monday\" to enabled"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid start time for \"Monday\" into the start time field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid end time for \"Monday\" into the end time field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save availability schedule\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"success\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC039",
+    "title": "Validation error when end time is earlier than start time",
+    "description": "Verifies the UI blocks saving when an available day has an invalid time range and shows a validation error.",
+    "category": "Doctor Availability Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Availability\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/availability\""
+      },
+      {
+        "type": "action",
+        "description": "Toggle availability for a day to enabled"
+      },
+      {
+        "type": "action",
+        "description": "Fill a start time into the start time field"
+      },
+      {
+        "type": "action",
+        "description": "Fill an end time earlier than the start time into the end time field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save availability schedule\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"invalid time range\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC040",
+    "title": "Save schedule with multiple enabled days (bulk weekly configuration)",
+    "description": "Verifies a doctor can configure more than one day and save the full weekly schedule successfully.",
+    "category": "Doctor Availability Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Availability\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/availability\""
+      },
+      {
+        "type": "action",
+        "description": "Toggle availability for \"Monday\" to enabled"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid start time for \"Monday\" into the start time field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid end time for \"Monday\" into the end time field"
+      },
+      {
+        "type": "action",
+        "description": "Toggle availability for \"Wednesday\" to enabled"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid start time for \"Wednesday\" into the start time field"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid end time for \"Wednesday\" into the end time field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save availability schedule\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"success\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC041",
+    "title": "Disable a previously enabled day and save (day turned off)",
+    "description": "Verifies a doctor can turn a day off and successfully save the schedule update.",
+    "category": "Doctor Availability Management",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Availability\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/availability\""
+      },
+      {
+        "type": "action",
+        "description": "Toggle availability for \"Monday\" to disabled"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save availability schedule\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"success\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC042",
+    "title": "Attempt to save with an enabled day missing a start time",
+    "description": "Verifies the UI prevents saving when a day is enabled but the start time is not provided.",
+    "category": "Doctor Availability Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Availability\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/availability\""
+      },
+      {
+        "type": "action",
+        "description": "Toggle availability for \"Tuesday\" to enabled"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid end time for \"Tuesday\" into the end time field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save availability schedule\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"start time\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC043",
+    "title": "Attempt to save with an enabled day missing an end time",
+    "description": "Verifies the UI prevents saving when a day is enabled but the end time is not provided.",
+    "category": "Doctor Availability Management",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Availability\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/availability\""
+      },
+      {
+        "type": "action",
+        "description": "Toggle availability for \"Thursday\" to enabled"
+      },
+      {
+        "type": "action",
+        "description": "Fill a valid start time for \"Thursday\" into the start time field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save availability schedule\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"end time\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC044",
+    "title": "Saving with no days enabled shows a clear outcome",
+    "description": "Verifies the UI handles saving an all-disabled schedule by showing a visible success message or a clear validation message.",
+    "category": "Doctor Availability Management",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Availability\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/availability\""
+      },
+      {
+        "type": "action",
+        "description": "Toggle availability for each day of the week to disabled"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save availability schedule\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"success\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC045",
+    "title": "Availability page loads and displays weekly day controls",
+    "description": "Verifies the availability management screen renders correctly with day toggles and time inputs visible.",
+    "category": "Doctor Availability Management",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Availability\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/availability\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Monday\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Tuesday\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Save availability schedule\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC046",
+    "title": "Doctor creates a new prescription and sees it listed",
+    "description": "Verifies a doctor can create a prescription with medications and instructions and see it appear in the prescriptions list.",
+    "category": "Prescriptions",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Login\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Prescriptions\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"New Prescription\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"New Prescription\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC047",
+    "title": "Doctor adds one medication row with full details and saves successfully",
+    "description": "Verifies the medication row fields accept input and saving shows the prescription in the grid/list.",
+    "category": "Prescriptions",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Login\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Prescriptions\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"New Prescription\" button"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Test Medicine A\" into the medication name field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      }
+    ]
+  },
+  {
+    "id": "TC048",
+    "title": "Doctor adds complete medication details (dosage, frequency, duration) and instructions then saves",
+    "description": "Verifies all structured fields can be filled and the saved prescription is visible in the list with expected summary content.",
+    "category": "Prescriptions",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Login\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Prescriptions\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"New Prescription\" button"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Amoxicillin\" into the medication name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"500mg\" into the dosage field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"3 times daily\" into the frequency field"
+      }
+    ]
+  },
+  {
+    "id": "TC049",
+    "title": "Doctor adds instructions and saves; prescription appears in the grid",
+    "description": "Verifies free-text instructions are persisted and visible after saving.",
+    "category": "Prescriptions",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Login\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Prescriptions\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"New Prescription\" button"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Ibuprofen\" into the medication name field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Take with food and plenty of water\" into the instructions field"
+      }
+    ]
+  },
+  {
+    "id": "TC050",
+    "title": "Validation: missing medication name shows required-field error on Save",
+    "description": "Verifies the UI blocks saving when a medication name is missing and displays a visible validation message.",
+    "category": "Prescriptions",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Login\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Prescriptions\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"New Prescription\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Medication name is required\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC051",
+    "title": "Doctor sees newly created prescription listed after Save (no modal remains open)",
+    "description": "Verifies the create flow completes by returning to the list view and showing the new entry.",
+    "category": "Prescriptions",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Login\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Prescriptions\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"New Prescription\" button"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Cetirizine\" into the medication name field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Cetirizine\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC052",
+    "title": "Patient can open prescriptions page and view prescriptions list",
+    "description": "Verifies a patient can access the prescriptions page and see a visible list/grid of prescriptions (even if empty).",
+    "category": "Prescriptions",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Login\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Prescriptions\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify page title contains \"Prescriptions\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Prescriptions list\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC053",
+    "title": "Add a walk-in patient with required name only and see success toast + waitlist update",
+    "description": "Verifies receptionist can add a walk-in patient to today's queue and immediately sees confirmation and the new entry in the waitlist.",
+    "category": "Reception Dashboard (Walk-In Queue)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Reception\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Test WalkIn One\" into the Patient Name field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"✓ Test WalkIn One added to the queue!\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Test WalkIn One\" is visible in the \"Waitlist Today\" section"
+      }
+    ]
+  },
+  {
+    "id": "TC054",
+    "title": "Add a walk-in patient with optional vitals and see success toast + waitlist update",
+    "description": "Verifies receptionist can submit a walk-in patient including optional vitals and the patient appears in today's waitlist.",
+    "category": "Reception Dashboard (Walk-In Queue)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Reception\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Test WalkIn Vitals\" into the Patient Name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"120/80\" into the Blood Pressure field"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"98\" into the Heart Rate field"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"98.6\" into the Temperature field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"✓ Test WalkIn Vitals added to the queue!\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Test WalkIn Vitals\" is visible in the \"Waitlist Today\" section"
+      }
+    ]
+  },
+  {
+    "id": "TC055",
+    "title": "Client-side validation: prevent submit when Patient Name is blank",
+    "description": "Verifies the receptionist cannot submit a walk-in patient without a required name and sees a visible validation/error message.",
+    "category": "Reception Dashboard (Walk-In Queue)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Reception\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Patient Name\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"required\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC056",
+    "title": "Trim/whitespace handling: name with leading/trailing spaces still succeeds",
+    "description": "Verifies a patient name with extra whitespace can be submitted and the success toast appears for the resulting name.",
+    "category": "Reception Dashboard (Walk-In Queue)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Reception\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Type \"  Test WalkIn Spaces  \" into the Patient Name field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"added to the queue!\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Test WalkIn Spaces\" is visible in the \"Waitlist Today\" section"
+      }
+    ]
+  },
+  {
+    "id": "TC057",
+    "title": "Numeric validation: entering non-numeric values into vitals shows visible error or blocks submit",
+    "description": "Verifies vitals fields enforce sensible input and the user receives visible feedback when invalid values are entered.",
+    "category": "Reception Dashboard (Walk-In Queue)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Reception\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Test WalkIn BadVitals\" into the Patient Name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"abc\" into the Heart Rate field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Heart Rate\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"invalid\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC058",
+    "title": "Error flow: submitting when clinic linking is missing (employer_id is null) shows invalid clinic linking screen",
+    "description": "Verifies the app shows an error screen with instructions when the receptionist profile is not linked to a clinic.",
+    "category": "Reception Dashboard (Walk-In Queue)",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Reception\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Test WalkIn NoClinic\" into the Patient Name field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"invalid clinic\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"clinic code\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC059",
+    "title": "Reception dashboard loads and shows core sections before interacting",
+    "description": "Verifies the receptionist can reach the Reception Dashboard and see the walk-in form and today's waitlist section.",
+    "category": "Reception Dashboard (Walk-In Queue)",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email/username field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Reception\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Walk-In\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Patient Name\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Waitlist Today\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC060",
+    "title": "Submit a medical question and receive an AI response in the conversation",
+    "description": "Verifies that a user can ask a medical question and see the assistant response added to conversation history.",
+    "category": "AI Medical Chatbot",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Chatbot\" in the app navigation"
+      },
+      {
+        "type": "action",
+        "description": "Type \"I have a sore throat and mild fever. What should I do?\" into the chatbot input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"typing\" indicator is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"I have a sore throat and mild fever. What should I do?\" is visible in the conversation history"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an assistant response message is visible in the conversation history"
+      }
+    ]
+  },
+  {
+    "id": "TC061",
+    "title": "Verify auto-scroll keeps the latest assistant message visible after response",
+    "description": "Verifies the conversation view scrolls to the newest message after a response is received.",
+    "category": "AI Medical Chatbot",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Chatbot\" in the app navigation"
+      },
+      {
+        "type": "action",
+        "description": "Type \"What are common causes of headaches?\" into the chatbot input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an assistant response message is visible in the conversation history"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the most recent assistant response is visible without scrolling"
+      }
+    ]
+  },
+  {
+    "id": "TC062",
+    "title": "Prevent empty message submission",
+    "description": "Verifies the chatbot does not submit an empty prompt and provides visible feedback or remains unchanged.",
+    "category": "AI Medical Chatbot",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Chatbot\" in the app navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click the chatbot input field"
+      },
+      {
+        "type": "action",
+        "description": "Press \"Enter\" key"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify no new user message bubble is visible in the conversation history"
+      }
+    ]
+  },
+  {
+    "id": "TC063",
+    "title": "Clear conversation removes prior messages from the view",
+    "description": "Verifies that the user can clear the chat history using the provided clear control.",
+    "category": "AI Medical Chatbot",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Chatbot\" in the app navigation"
+      },
+      {
+        "type": "action",
+        "description": "Type \"What is a normal adult resting heart rate?\" into the chatbot input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"What is a normal adult resting heart rate?\" is visible in the conversation history"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Clear conversation\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"What is a normal adult resting heart rate?\" is not visible in the conversation history"
+      }
+    ]
+  },
+  {
+    "id": "TC064",
+    "title": "Submitting multiple questions appends messages in order",
+    "description": "Verifies that the conversation history retains earlier exchanges and adds new ones sequentially.",
+    "category": "AI Medical Chatbot",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Chatbot\" in the app navigation"
+      },
+      {
+        "type": "action",
+        "description": "Type \"What are symptoms of dehydration?\" into the chatbot input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"What are symptoms of dehydration?\" is visible in the conversation history"
+      },
+      {
+        "type": "action",
+        "description": "Type \"When should I see a doctor for it?\" into the chatbot input field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"When should I see a doctor for it?\" is visible in the conversation history"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an assistant response message is visible after the second question"
+      }
+    ]
+  },
+  {
+    "id": "TC065",
+    "title": "Keyboard submission sends the message (Enter to submit)",
+    "description": "Verifies that pressing Enter in the chat input submits the message and adds it to the conversation history.",
+    "category": "AI Medical Chatbot",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Chatbot\" in the app navigation"
+      },
+      {
+        "type": "action",
+        "description": "Type \"Is it safe to take ibuprofen on an empty stomach?\" into the chatbot input field"
+      },
+      {
+        "type": "action",
+        "description": "Press \"Enter\" key"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Is it safe to take ibuprofen on an empty stomach?\" is visible in the conversation history"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an assistant response message is visible in the conversation history"
+      }
+    ]
+  },
+  {
+    "id": "TC066",
+    "title": "Open Settings modal from Dashboard header",
+    "description": "Verifies an authenticated user can open the Settings modal from the dashboard header.",
+    "category": "Settings",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the Settings icon in the header"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Settings\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC067",
+    "title": "Update profile name and phone successfully",
+    "description": "Verifies a user can update profile name and phone in Settings and sees a visible success confirmation.",
+    "category": "Settings",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the Settings icon in the header"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Test User Updated\" into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"5551234567\" into the phone field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Saved\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC068",
+    "title": "Updated profile values remain visible after saving",
+    "description": "Verifies that after saving, the Settings modal displays the updated name and phone values.",
+    "category": "Settings",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the Settings icon in the header"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Test User Persist\" into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"5550001111\" into the phone field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Test User Persist\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC069",
+    "title": "Attempt to save profile with empty required name",
+    "description": "Verifies the UI prevents saving when the name field is empty and shows a visible validation message.",
+    "category": "Settings",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the Settings icon in the header"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"\" into the name field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Name\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC070",
+    "title": "Toggle dark/light theme from Settings",
+    "description": "Verifies the user can toggle the theme setting and sees a visible indication of the selected theme option.",
+    "category": "Settings",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the Settings icon in the header"
+      },
+      {
+        "type": "action",
+        "description": "Click the theme toggle (Dark/Light) option"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Dark\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC071",
+    "title": "Manage notification preferences and save",
+    "description": "Verifies the user can change a notification preference and save with a visible confirmation.",
+    "category": "Settings",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the Settings icon in the header"
+      },
+      {
+        "type": "action",
+        "description": "Click a notification preference toggle to change its state"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Saved\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC072",
+    "title": "Change password and handle save failure with visible error",
+    "description": "Verifies that when a password change cannot be saved, an error message is shown indicating the changes could not be saved.",
+    "category": "Settings",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the Settings icon in the header"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"WrongOldPass123!\" into the current password field"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"NewPass123!\" into the new password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"could not be saved\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC073",
+    "title": "Change password with mismatched confirmation shows validation error",
+    "description": "Verifies the UI blocks password change when new password and confirmation do not match, showing a visible validation error.",
+    "category": "Settings",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Log in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click the Settings icon in the header"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"NewPass123!\" into the new password field"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"DifferentPass123!\" into the confirm password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"do not match\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC074",
+    "title": "Logout from Dashboard home redirects to Login and shows login form",
+    "description": "Verifies a signed-in user can log out from the dashboard header and is redirected to the login page with the login form visible.",
+    "category": "Authentication - Logout",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Logout\" button in the header"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/login\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Login\" form is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC075",
+    "title": "Logout from Appointments page redirects to Login",
+    "description": "Verifies logout works from a secondary dashboard route and redirects to /login.",
+    "category": "Authentication - Logout",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Appointments\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/appointments\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Logout\" button in the header"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/login\""
+      }
+    ]
+  },
+  {
+    "id": "TC076",
+    "title": "Logout from Prescriptions page redirects to Login",
+    "description": "Verifies logout works from the Prescriptions dashboard route and returns the user to the login page.",
+    "category": "Authentication - Logout",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Prescriptions\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/prescriptions\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Logout\" button in the header"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Login\" form is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC077",
+    "title": "Logout from Availability page redirects to Login (doctor role if available)",
+    "description": "Verifies logout can be initiated from the Availability page and returns to the login screen.",
+    "category": "Authentication - Logout",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Availability\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/availability\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Logout\" button in the header"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/login\""
+      }
+    ]
+  },
+  {
+    "id": "TC078",
+    "title": "Logout from Reception dashboard redirects to Login (receptionist role if available)",
+    "description": "Verifies logout works from the receptionist dashboard route and returns to login.",
+    "category": "Authentication - Logout",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Sign in\" button"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Reception\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/dashboard/reception\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Logout\" button in the header"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Login\" form is visible"
+      }
+    ]
+  }
+]

@@ -1,110 +1,137 @@
 import { Link } from 'react-router-dom'
-import { Activity, ShieldCheck, Heart, ArrowRight, Star, Users } from 'lucide-react'
+import { Activity, Shield, Zap, Heart, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { motion } from 'framer-motion'
 import ThemeToggle from '../components/ThemeToggle'
+
+const ECGGraph = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20 dark:opacity-10">
+    <svg className="w-full h-full" viewBox="0 0 1000 100" preserveAspectRatio="none">
+      <path
+        d="M0,50 L200,50 L220,20 L240,80 L260,50 L400,50 L420,10 L440,90 L460,50 L700,50 L720,20 L740,80 L760,50 L1000,50"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        className="text-cyan-500 dark:text-cyan-400"
+      />
+      <div className="absolute inset-y-0 w-20 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent ecg-line-scan" />
+    </svg>
+  </div>
+);
+
+const FeatureBadge = ({ icon: Icon, text }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/40 dark:bg-slate-800/40 backdrop-blur-md border border-white/20 dark:border-slate-700/30 shadow-sm"
+  >
+    <Icon className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
+    <span className="text-[10px] md:text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wider">{text}</span>
+  </motion.div>
+);
 
 export default function Landing() {
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-cyan-50 via-emerald-50 to-blue-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-all duration-500">
-      {/* Background blobs — cyan, emerald, blue only */}
-      <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-cyan-400/20 dark:bg-cyan-500/10 rounded-full mix-blend-multiply filter blur-[120px] opacity-60 dark:opacity-30 animate-pulse duration-[15s]" />
-      <div className="absolute bottom-[-10%] left-[-5%] w-[800px] h-[800px] bg-emerald-400/15 dark:bg-emerald-500/8 rounded-full mix-blend-multiply filter blur-[120px] opacity-50 dark:opacity-25 animate-pulse duration-[18s]" />
-      <div className="absolute top-[20%] left-[10%] w-[600px] h-[600px] bg-blue-400/10 dark:bg-blue-500/5 rounded-full mix-blend-multiply filter blur-[100px] opacity-40 dark:opacity-20 animate-pulse duration-[12s]" />
+    <div className="h-screen w-full overflow-hidden bg-slate-50 dark:bg-slate-950 relative flex flex-col font-sans transition-colors duration-700">
+      {/* Premium Background Elements */}
+      <div className="absolute inset-0 medical-grid opacity-[0.03] dark:opacity-[0.05]" />
+      <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-[120px] animate-pulse" />
+      <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[120px] animate-pulse" />
 
-      <header className="fixed inset-x-0 top-0 z-50 transition-all duration-300 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm">
-        <nav className="flex items-center justify-between p-6 lg:px-8 max-w-7xl mx-auto" aria-label="Global">
-          <div className="flex lg:flex-1">
-            <a href="#" className="-m-1.5 p-1.5 flex items-center gap-3 group">
-              <div className="bg-gradient-to-br from-cyan-500 via-teal-500 to-emerald-500 p-2.5 rounded-xl shadow-xl shadow-cyan-500/30 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
-                <Activity className="h-6 w-6 text-white relative z-10" />
-              </div>
-              <span className="font-bold text-xl text-slate-900 dark:text-white tracking-tight">MedVita</span>
-            </a>
+      {/* Header */}
+      <header className="relative z-50 flex items-center justify-between px-6 md:px-12 py-6">
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-cyan-500 via-teal-500 to-emerald-500 flex items-center justify-center shadow-xl shadow-cyan-500/20 group-hover:scale-110 transition-transform duration-500">
+            <Activity className="text-white w-6 h-6" />
           </div>
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <div className="hidden sm:flex gap-3">
-              <Link to="/login" className="px-6 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
-                Log in
-              </Link>
-              <Link to="/signup" className="px-6 py-2.5 text-sm font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full hover:from-cyan-600 hover:to-blue-600 transition-all shadow-lg shadow-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/40 hover:-translate-y-0.5">
-                Sign up
-              </Link>
-            </div>
-          </div>
-        </nav>
+          <span className="text-xl md:text-2xl font-black tracking-tighter text-slate-900 dark:text-white">
+            Med<span className="text-cyan-500">Vita</span>
+          </span>
+        </Link>
+        <div className="flex items-center gap-4 md:gap-8">
+          <ThemeToggle />
+          <Link
+            to="/login"
+            className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors uppercase tracking-widest"
+          >
+            Sign In
+          </Link>
+          <Link
+            to="/signup"
+            className="hidden sm:flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-xl shadow-slate-900/10 dark:shadow-white/10"
+          >
+            Get Started <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
       </header>
 
-      <div className="relative isolate px-6 pt-14 lg:px-8 min-h-screen flex items-center justify-center">
-        <div className="mx-auto max-w-4xl py-20">
-          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-2xl rounded-[3rem] p-8 sm:p-20 text-center shadow-2xl border border-white/50 dark:border-slate-700/50 relative overflow-hidden group">
+      {/* Main Content Hub */}
+      <main className="flex-1 relative z-10 flex flex-col items-center justify-center px-6">
+        <ECGGraph />
 
-            {/* Inner glow */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/8 via-transparent to-blue-500/8 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-emerald-500/10 to-cyan-500/10 rounded-full blur-3xl" />
+        <div className="max-w-4xl w-full text-center space-y-8 md:space-y-12 mb-12">
+          {/* Status Pills */}
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <FeatureBadge icon={Shield} text="GDPR Compliant" />
+            <FeatureBadge icon={Zap} text="AI Diagnostics" />
+            <FeatureBadge icon={Heart} text="Patient Centric" />
+          </div>
 
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/30 dark:to-blue-900/30 border border-cyan-200/50 dark:border-cyan-800/50 text-cyan-600 dark:text-cyan-400 text-sm font-bold mb-8 shadow-lg relative z-10">
-              <Star className="w-4 h-4 fill-cyan-600 dark:fill-cyan-400" />
-              <span>Premium Healthcare Experience</span>
-            </div>
+          {/* Core Message */}
+          <div className="space-y-4 md:space-y-6">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-[clamp(2.5rem,8vw,5.5rem)] font-black leading-[0.9] tracking-tighter text-slate-900 dark:text-white text-balance"
+            >
+              Healthcare <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 via-blue-600 to-emerald-600">Reimagined.</span>
+            </motion.h1>
 
-            <h1 className="text-5xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-7xl mb-8 leading-tight relative z-10">
-              <span className="block mb-2">Healthcare Reimagined</span>
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 via-blue-600 to-emerald-600 dark:from-cyan-400 dark:via-blue-400 dark:to-emerald-400 pb-2">
-                Simple. Secure. Smart.
-              </span>
-            </h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="max-w-2xl mx-auto text-base md:text-xl text-slate-500 dark:text-slate-400 font-medium leading-relaxed"
+            >
+              The premium, all-in-one patient management system for modern practitioners.
+              Simple. Secure. Smart.
+            </motion.p>
+          </div>
 
-            <p className="mt-6 text-xl leading-relaxed text-slate-600 dark:text-slate-300 max-w-2xl mx-auto relative z-10">
-              MedVita streamlines the connection between doctors and patients. Experience a seamless, secure, and intelligent way to manage appointments, prescriptions, and health records.
+          {/* Dynamic CTA */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
+          >
+            <Link
+              to="/signup"
+              className="w-full sm:w-auto px-10 py-5 rounded-[2rem] bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-black text-lg shadow-2xl shadow-cyan-500/40 hover:scale-105 hover:shadow-cyan-500/60 transition-all duration-300 flex items-center justify-center gap-3 group"
+            >
+              Start Your Practice <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <p className="text-[10px] uppercase font-black tracking-widest text-slate-400 py-3 sm:py-0 px-4">
+              Join 10k+ Specialists
             </p>
+          </motion.div>
+        </div>
 
-            <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
-              <Link
-                to="/signup"
-                className="px-8 py-4 text-base font-bold text-white bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full shadow-xl shadow-cyan-500/30 hover:shadow-2xl hover:shadow-cyan-500/40 hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto relative overflow-hidden group"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                <span className="relative z-10">Get Started Free</span>
-              </Link>
-              <Link
-                to="/login"
-                className="px-8 py-4 text-base font-bold text-slate-700 dark:text-slate-200 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-full hover:bg-white dark:hover:bg-slate-800 hover:border-cyan-300 dark:hover:border-cyan-600 transition-all duration-300 w-full sm:w-auto flex items-center justify-center gap-2 group/link shadow-lg"
-              >
-                Sign In <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-
-            {/* Feature cards */}
-            <div className="mt-20 grid grid-cols-1 gap-8 sm:grid-cols-3 relative z-10">
-              <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl p-8 rounded-3xl flex flex-col items-center hover:-translate-y-2 hover:scale-105 transition-all duration-300 border border-slate-200/50 dark:border-slate-700/50 shadow-xl hover:shadow-2xl group">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center mb-4 text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <ShieldCheck className="h-8 w-8" />
-                </div>
-                <span className="text-lg font-bold text-slate-900 dark:text-white mb-2">Secure & Private</span>
-                <span className="text-sm text-slate-500 dark:text-slate-400">End-to-end encryption for your peace of mind</span>
-              </div>
-
-              <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl p-8 rounded-3xl flex flex-col items-center hover:-translate-y-2 hover:scale-105 transition-all duration-300 border border-slate-200/50 dark:border-slate-700/50 shadow-xl hover:shadow-2xl group">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-500 flex items-center justify-center mb-4 text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Heart className="h-8 w-8" />
-                </div>
-                <span className="text-lg font-bold text-slate-900 dark:text-white mb-2">Patient Focused</span>
-                <span className="text-sm text-slate-500 dark:text-slate-400">Designed with empathy for better care</span>
-              </div>
-
-              <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl p-8 rounded-3xl flex flex-col items-center hover:-translate-y-2 hover:scale-105 transition-all duration-300 border border-slate-200/50 dark:border-slate-700/50 shadow-xl hover:shadow-2xl group">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-4 text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Activity className="h-8 w-8" />
-                </div>
-                <span className="text-lg font-bold text-slate-900 dark:text-white mb-2">Real-time Updates</span>
-                <span className="text-sm text-slate-500 dark:text-slate-400">Instant notifications for important events</span>
-              </div>
-            </div>
+        {/* Floating Trust Indicators (Low-key) */}
+        <div className="absolute bottom-12 left-12 hidden lg:flex flex-col gap-4">
+          <div className="flex items-center gap-3 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all cursor-default">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">End-to-End Encryption</span>
           </div>
         </div>
-      </div>
+      </main>
+
+      {/* Footer Branding (Subtle) */}
+      <footer className="relative z-10 py-8 px-12 flex justify-center opacity-40">
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">
+          &copy; {new Date().getFullYear()} MedVita Ecosystem &bull; Precision Care
+        </p>
+      </footer>
     </div>
   )
 }

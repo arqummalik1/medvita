@@ -12,6 +12,7 @@ import PatientsManager from './pages/PatientsManager'
 import AvailabilityManager from './pages/AvailabilityManager'
 import AppointmentsManager from './pages/AppointmentsManager'
 import PrescriptionsViewer from './pages/PrescriptionsViewer'
+import EarningsManager from './pages/EarningsManager'
 import Chatbot from './pages/Chatbot'
 
 function DashboardLayout() {
@@ -41,6 +42,7 @@ function App() {
             {/* Doctor Routes */}
             <Route path="patients" element={<ProtectedRoute allowedRoles={['doctor']}><PatientsManager /></ProtectedRoute>} />
             <Route path="availability" element={<ProtectedRoute allowedRoles={['doctor']}><AvailabilityManager /></ProtectedRoute>} />
+            <Route path="earnings" element={<ProtectedRoute allowedRoles={['doctor']}><EarningsManager /></ProtectedRoute>} />
 
             {/* Patient Routes */}
             <Route path="prescriptions" element={<ProtectedRoute allowedRoles={['patient', 'doctor']}><PrescriptionsViewer /></ProtectedRoute>} />

@@ -1,0 +1,289 @@
+version: "2"
+type: frontend
+tech_stack:
+  - JavaScript (JSX)
+  - React 19
+  - React Router DOM v7
+  - Vite 7
+  - Tailwind CSS v4
+  - Supabase JS v2
+  - Framer Motion
+  - Recharts
+  - Headless UI
+  - Lucide React
+
+routes:
+  - path: /
+    file: src/pages/Landing.jsx
+    auth_required: false
+    description: Public landing page showcasing MedVita features and CTA buttons
+
+  - path: /login
+    file: src/pages/Login.jsx
+    auth_required: false
+    description: User login page with email/password and role selection
+
+  - path: /signup
+    file: src/pages/Signup.jsx
+    auth_required: false
+    description: Patient self-registration page
+
+  - path: /staff-signup
+    file: src/pages/ReceptionistSignup.jsx
+    auth_required: false
+    description: Receptionist/staff registration page with staff code verification
+
+  - path: /dashboard
+    file: src/pages/DashboardHome.jsx
+    auth_required: true
+    description: Main dashboard home, adapts content by role (doctor/patient)
+
+  - path: /dashboard/appointments
+    file: src/pages/AppointmentsManager.jsx
+    auth_required: true
+    description: Appointment management for patients and doctors
+
+  - path: /dashboard/patients
+    file: src/pages/PatientsManager.jsx
+    auth_required: true
+    description: Patient management and records for doctors only
+
+  - path: /dashboard/availability
+    file: src/pages/AvailabilityManager.jsx
+    auth_required: true
+    description: Doctor availability scheduling management
+
+  - path: /dashboard/prescriptions
+    file: src/pages/PrescriptionsViewer.jsx
+    auth_required: true
+    description: Prescription viewing for patients; creation for doctors
+
+  - path: /dashboard/reception
+    file: src/pages/ReceptionDashboard.jsx
+    auth_required: true
+    description: Receptionist dashboard for managing check-ins and appointments
+
+  - path: /chatbot
+    file: src/pages/Chatbot.jsx
+    auth_required: true
+    description: AI-powered medical chatbot assistant
+
+features:
+  - name: User Login
+    description: Login with email and password, role selection (patient/doctor)
+    files:
+      - src/pages/Login.jsx
+      - src/context/AuthContext.jsx
+    entry_route: /login
+    user_interactions:
+      - Select role (patient or doctor) using toggle
+      - Fill email input field
+      - Fill password input field
+      - Click Login button to submit
+      - See error message on invalid credentials
+      - Redirect to /dashboard on success
+    api_calls:
+      - method: POST
+        endpoint: Supabase Auth signInWithPassword
+    auth_required: false
+
+  - name: Patient Signup
+    description: New patient self-registration with profile creation
+    files:
+      - src/pages/Signup.jsx
+      - src/context/AuthContext.jsx
+    entry_route: /signup
+    user_interactions:
+      - Fill full name, email, phone, date of birth
+      - Fill password and confirm password
+      - Click Sign Up button
+      - See validation errors on mismatch or missing fields
+      - Redirect to /dashboard on success
+    api_calls:
+      - method: POST
+        endpoint: Supabase Auth signUp
+      - method: POST
+        endpoint: Supabase DB insert into profiles
+    auth_required: false
+
+  - name: Receptionist Signup
+    description: Staff/receptionist registration requiring a staff access code
+    files:
+      - src/pages/ReceptionistSignup.jsx
+    entry_route: /staff-signup
+    user_interactions:
+      - Fill name, email, staff code, password fields
+      - Verify staff access code
+      - Submit registration form
+      - See error on invalid staff code
+    api_calls:
+      - method: POST
+        endpoint: Supabase Auth signUp
+      - method: POST
+        endpoint: Supabase DB insert into staff_profiles
+    auth_required: false
+
+  - name: Dashboard Home
+    description: Role-adaptive home screen showing stats, upcoming appointments, charts
+    files:
+      - src/pages/DashboardHome.jsx
+      - src/components/StatCard.jsx
+      - src/components/SparklineChart.jsx
+      - src/components/PatientEngagementChart.jsx
+    entry_route: /dashboard
+    user_interactions:
+      - View statistics cards (patients, appointments, prescriptions)
+      - View upcoming appointments list
+      - View engagement charts (doctor view)
+    api_calls:
+      - method: GET
+        endpoint: Supabase DB select from appointments
+      - method: GET
+        endpoint: Supabase DB select from profiles
+    auth_required: true
+
+  - name: Appointment Management
+    description: Book, view, cancel, and manage appointments for patients and doctors
+    files:
+      - src/pages/AppointmentsManager.jsx
+    entry_route: /dashboard/appointments
+    user_interactions:
+      - Patient can book new appointment by selecting doctor, date, time
+      - Doctor can approve or cancel pending appointments
+      - Filter appointments by status (pending/confirmed/cancelled)
+      - View appointment details
+    api_calls:
+      - method: GET
+        endpoint: Supabase DB select from appointments
+      - method: POST
+        endpoint: Supabase DB insert into appointments
+      - method: PATCH
+        endpoint: Supabase DB update appointments status
+    auth_required: true
+
+  - name: Patient Management
+    description: Doctor-only feature to view and manage patient records
+    files:
+      - src/pages/PatientsManager.jsx
+      - src/components/PatientDetails.jsx
+    entry_route: /dashboard/patients
+    user_interactions:
+      - Search patients by name
+      - Click patient to view full profile and medical history
+      - Add notes to patient record
+      - View patient appointments and prescriptions
+    api_calls:
+      - method: GET
+        endpoint: Supabase DB select from profiles
+      - method: GET
+        endpoint: Supabase DB select from appointments
+    auth_required: true
+
+  - name: Doctor Availability Management
+    description: Doctors set their weekly availability schedule
+    files:
+      - src/pages/AvailabilityManager.jsx
+    entry_route: /dashboard/availability
+    user_interactions:
+      - Toggle availability for each day of the week
+      - Set start and end times for available days
+      - Save availability schedule
+    api_calls:
+      - method: GET
+        endpoint: Supabase DB select from availability
+      - method: UPSERT
+        endpoint: Supabase DB upsert into availability
+    auth_required: true
+
+  - name: Prescriptions
+    description: Doctors create prescriptions; patients view their own
+    files:
+      - src/pages/PrescriptionsViewer.jsx
+      - src/components/PrescriptionCreator.jsx
+      - src/components/PrescriptionPreviewModal.jsx
+    entry_route: /dashboard/prescriptions
+    user_interactions:
+      - Doctor: Select patient, add medications, dosage, instructions, click Save
+      - Patient: View list of prescriptions
+      - Download/Print prescription as PDF
+    api_calls:
+      - method: GET
+        endpoint: Supabase DB select from prescriptions
+      - method: POST
+        endpoint: Supabase DB insert into prescriptions
+    auth_required: true
+
+  - name: Reception Dashboard
+    description: Receptionist manages patient check-ins and appointment views
+    files:
+      - src/pages/ReceptionDashboard.jsx
+    entry_route: /dashboard/reception
+    user_interactions:
+      - View scheduled appointments for today
+      - Check in patients on arrival
+      - Search appointments by patient name
+      - View appointment status boards
+    api_calls:
+      - method: GET
+        endpoint: Supabase DB select from appointments
+      - method: PATCH
+        endpoint: Supabase DB update appointments check-in status
+    auth_required: true
+
+  - name: AI Medical Chatbot
+    description: An AI assistant that answers medical questions
+    files:
+      - src/pages/Chatbot.jsx
+    entry_route: /chatbot
+    user_interactions:
+      - Type a medical question or symptom
+      - Submit and wait for AI response
+      - View conversation history
+      - Clear conversation
+    api_calls:
+      - method: POST
+        endpoint: /api/chat (serverless function)
+    auth_required: true
+
+  - name: Settings
+    description: User profile and application settings management
+    files:
+      - src/components/SettingsModal.jsx
+    entry_route: /dashboard
+    user_interactions:
+      - Open settings modal from header
+      - Update profile information (name, phone)
+      - Change password
+      - Toggle dark/light theme
+      - Manage notification preferences
+    api_calls:
+      - method: PATCH
+        endpoint: Supabase DB update profiles
+      - method: POST
+        endpoint: Supabase Auth updateUser
+    auth_required: true
+
+  - name: Authentication - Logout
+    description: User session termination
+    files:
+      - src/context/AuthContext.jsx
+      - src/components/Header.jsx
+    entry_route: /dashboard
+    user_interactions:
+      - Click logout button in header
+      - Session cleared and redirect to /login
+    api_calls:
+      - method: POST
+        endpoint: Supabase Auth signOut
+    auth_required: true
+
+known_limitations:
+  - issue: Chatbot relies on a serverless /api/chat endpoint that may not be available in local dev without Vercel CLI
+    location: src/pages/Chatbot.jsx
+    impact: Chatbot messages will fail with network errors without the API route running
+  - issue: Staff signup uses a hardcoded staff access code for validation
+    location: src/pages/ReceptionistSignup.jsx
+    impact: Any user with the code can register as receptionist; no server-side validation
+  - issue: Role-based routing enforced client-side only
+    location: src/components/ProtectedRoute.jsx
+    impact: Direct URL access may expose UI but Supabase RLS policies protect actual data

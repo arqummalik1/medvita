@@ -10,7 +10,8 @@ import {
     MessageSquare,
     LogOut,
     Settings,
-    Activity
+    Activity,
+    TrendingUp
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import SettingsModal from './SettingsModal';
@@ -26,6 +27,7 @@ export default function Sidebar({ onClose }) {
         { name: 'Appointments', label: 'Schedule', href: '/dashboard/appointments', icon: Calendar, roles: ['patient', 'doctor'] },
         { name: 'Patients', label: 'Patients', href: '/dashboard/patients', icon: Users, roles: ['doctor'] },
         { name: 'Availability', label: 'Availability', href: '/dashboard/availability', icon: Clock, roles: ['doctor'] },
+        { name: 'Earnings', label: 'Earnings', href: '/dashboard/earnings', icon: TrendingUp, roles: ['doctor'] },
         { name: 'Prescriptions', label: 'Rx', href: '/dashboard/prescriptions', icon: FileText, roles: ['patient', 'doctor'] },
         { name: 'AI Chat', label: 'AI Chat', href: '/chatbot', icon: MessageSquare, roles: ['patient', 'doctor'] },
     ];

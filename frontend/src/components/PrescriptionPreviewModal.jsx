@@ -307,8 +307,8 @@ export default function PrescriptionPreviewModal({ isOpen, onClose, prescription
                                         </div>
                                     </div>
 
-                                    <div className="bg-slate-200/70 p-4 sm:p-10 overflow-y-auto max-h-[85vh] flex flex-col items-center custom-scrollbar scroll-smooth">
-                                        <div className="shadow-2xl bg-white mb-10 mt-4" style={{ width: '210mm', flexShrink: 0 }}>
+                                    <div className="bg-slate-200/70 p-4 sm:p-10 overflow-auto max-h-[85vh] flex flex-col items-center custom-scrollbar scroll-smooth">
+                                        <div className="shadow-2xl bg-white mb-10 mt-4 origin-top scale-[0.35] xs:scale-[0.45] sm:scale-[0.85] md:scale-100" style={{ width: '210mm', flexShrink: 0 }}>
                                             <PrescriptionTemplate
                                                 prescription={prescription}
                                                 patient={patient}
