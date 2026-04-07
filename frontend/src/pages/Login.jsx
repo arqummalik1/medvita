@@ -1,18 +1,49 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Activity, Lock, Mail } from 'lucide-react'
+import { Activity, Lock, Mail, Stethoscope, Heart, CalendarDays, ShieldCheck, ArrowRight } from 'lucide-react'
 import clsx from 'clsx'
 import { supabase } from '../lib/supabaseClient'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CheckCircle2, AlertCircle, Loader2 } from 'lucide-react'
+
+const features = [
+  {
+    icon: Stethoscope,
+    title: 'Doctor Dashboard',
+    description: 'Patient management, prescriptions, scheduling',
+    color: 'text-emerald-400',
+    bgColor: 'bg-emerald-500/20',
+  },
+  {
+    icon: Heart,
+    title: 'Patient Portal',
+    description: 'Book appointments, view prescriptions',
+    color: 'text-cyan-400',
+    bgColor: 'bg-cyan-500/20',
+  },
+  {
+    icon: CalendarDays,
+    title: 'Smart Scheduling',
+    description: 'AI-powered appointment management',
+    color: 'text-blue-400',
+    bgColor: 'bg-blue-500/20',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Secure & Compliant',
+    description: 'HIPAA-compliant data protection',
+    color: 'text-emerald-400',
+    bgColor: 'bg-emerald-500/20',
+  },
+]
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [toast, setToast] = useState(null)
   const [loading, setLoading] = useState(false)
-  useAuth()
+  const { signIn } = useAuth()
   const navigate = useNavigate()
 
   const showToast = (type, message) => setToast({ type, message })
@@ -23,167 +54,229 @@ export default function Login() {
     setToast(null)
 
     try {
-      const { data: { user }, error } = await supabase.auth.signInWithPassword({ email, password })
+      const { data, error } = await signIn(email, password)
+
       if (error) throw error
+      if (!data.user) throw new Error('Authentication failed: No user data returned.')
 
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('role')
-        .eq('id', user.id)
+        .eq('id', data.user.id)
         .single()
 
       if (profileError) {
-        console.warn('Could not fetch profile for role-based routing:', profileError)
+        console.warn('[Auth] Redirection notice: Profile not found, defaulting to base dashboard.', profileError)
       }
 
       showToast('success', 'Signed in successfully! Redirecting...')
 
-      const role = profileData?.role
+      const role = profileData?.role || 'patient'
+
       setTimeout(() => {
         if (role === 'receptionist') {
-          navigate('/dashboard/reception')
+          navigate('/dashboard/reception', { replace: true })
         } else {
-          navigate('/dashboard')
+          navigate('/dashboard', { replace: true })
         }
-      }, 1200)
+      }, 1000)
 
     } catch (error) {
-      console.error('Login error:', error)
+      console.error('[Auth] Login error:', error)
+      let message = 'Login failed. Please try again.'
+
       if (error.message?.includes('Invalid login credentials')) {
-        showToast('error', 'Incorrect email or password. Please try again.')
+        message = 'Incorrect email or password. Please try again.'
       } else if (error.message?.includes('Email not confirmed')) {
-        showToast('error', 'Please confirm your email address before logging in.')
-      } else {
-        showToast('error', error.message || 'Login failed. Please try again.')
+        message = 'Please confirm your email address before logging in.'
+      } else if (error.status === 429) {
+        message = 'Too many attempts. Please try again later.'
       }
+
+      showToast('error', message)
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-cyan-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-all duration-500">
+    <div className="min-h-screen flex bg-[#0B1120] overflow-hidden">
+      {/* Toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key="toast"
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className={clsx(
+              'fixed top-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[400px] p-4 rounded-xl shadow-2xl flex items-center gap-3 z-[100] border backdrop-blur-md',
+              toast.type === 'success'
+                ? 'bg-emerald-500 border-emerald-400 text-white'
+                : 'bg-red-500 border-red-400 text-white'
+            )}
+          >
+            {toast.type === 'success'
+              ? <CheckCircle2 className="w-5 h-5 shrink-0" />
+              : <AlertCircle className="w-5 h-5 shrink-0" />}
+            <p className="font-medium text-sm">{toast.message}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Background blobs — NO pink/purple */}
-      <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
-        <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-cyan-400/20 dark:bg-cyan-500/10 rounded-full blur-[120px] opacity-60 dark:opacity-30 animate-pulse" />
-        <div className="absolute bottom-[-20%] left-[-10%] w-[800px] h-[800px] bg-emerald-400/15 dark:bg-emerald-500/8 rounded-full blur-[120px] opacity-50 dark:opacity-25 animate-pulse" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-400/10 dark:bg-blue-500/5 rounded-full blur-[100px] opacity-40 dark:opacity-20 animate-pulse" />
-      </div>
-
-      <div className="w-full max-w-md p-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-2xl rounded-[40px] shadow-2xl border border-white/50 dark:border-slate-700/50 relative z-10 mx-4">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-500/10 to-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        {/* Toast */}
-        <AnimatePresence>
-          {toast && (
-            <motion.div
-              key="toast"
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              className={clsx(
-                'absolute -top-16 left-1/2 -translate-x-1/2 w-[90%] p-4 rounded-2xl shadow-xl backdrop-blur-md border flex items-center gap-3 z-50',
-                toast.type === 'success'
-                  ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-200'
-                  : 'bg-red-50/90 border-red-200 text-red-800 dark:bg-red-900/30 dark:border-red-800 dark:text-red-200'
-              )}
-            >
-              {toast.type === 'success'
-                ? <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-500" />
-                : <AlertCircle className="w-5 h-5 shrink-0 text-red-500" />}
-              <p className="font-medium text-sm">{toast.message}</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Header */}
-        <div className="text-center mb-10 relative z-10">
-          {/* App icon — cyan to emerald, no indigo */}
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500 via-teal-500 to-emerald-500 mb-6 shadow-xl shadow-cyan-500/30 hover:scale-110 transition-transform duration-300 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent pointer-events-none" />
-            <Activity className="h-10 w-10 text-white relative z-10" />
-          </div>
-          <h2 className="text-4xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">Welcome Back</h2>
-          <p className="text-slate-500 dark:text-slate-400 font-medium">Sign in to your MedVita account</p>
+      {/* Left Panel - Hero Section */}
+      <div className="hidden lg:flex lg:w-[55%] xl:w-[60%] relative flex-col justify-center px-12 xl:px-20">
+        {/* Background gradient effects */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[100px]" />
+          <div className="absolute top-1/2 left-1/3 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[80px]" />
         </div>
 
-        {/* Form */}
-        <form className="space-y-5" onSubmit={handleSubmit}>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 ml-1">Email address</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-slate-400 dark:text-slate-500" />
-              </div>
-              <input
-                id="email-address"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="input-field pl-10"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
+        <div className="relative z-10 max-w-xl">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/50 border border-slate-700/50 mb-8">
+            <Activity className="w-4 h-4 text-emerald-400" />
+            <span className="text-sm font-medium text-slate-300">MedVita Healthcare Platform</span>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 ml-1">Password</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-slate-400 dark:text-slate-500" />
-              </div>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="input-field pl-10"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
+          {/* Heading */}
+          <h1 className="text-5xl xl:text-6xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              Modern Healthcare
+            </span>
+            <br />
+            <span className="text-white">Management</span>
+          </h1>
 
-          <div className="pt-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-bold py-4 px-6 rounded-2xl text-base shadow-xl shadow-cyan-500/30 hover:shadow-2xl hover:shadow-cyan-500/40 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 relative overflow-hidden group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 pointer-events-none" />
-              {loading ? (
-                <span className="flex items-center justify-center gap-2 relative z-10">
-                  <Loader2 className="animate-spin h-5 w-5" />
-                  Signing in...
-                </span>
-              ) : (
-                <span className="relative z-10">Sign in</span>
+          {/* Description */}
+          <p className="text-slate-400 text-lg mb-10 max-w-md">
+            Streamline your medical practice with intelligent patient management, digital prescriptions, and seamless appointment scheduling.
+          </p>
+
+          {/* Feature Cards Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50 backdrop-blur-sm hover:bg-slate-800/60 transition-colors"
+              >
+                <div className={`inline-flex items-center justify-center w-10 h-10 rounded-lg ${feature.bgColor} mb-3`}>
+                  <feature.icon className={`w-5 h-5 ${feature.color}`} />
+                </div>
+                <h3 className="text-white font-semibold text-sm mb-1">{feature.title}</h3>
+                <p className="text-slate-500 text-xs leading-relaxed">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right Panel - Login Form */}
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 relative">
+        {/* Form Card */}
+        <div className="w-full max-w-md">
+          <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-8 shadow-2xl">
+            {/* Logo */}
+            <div className="flex flex-col items-center mb-8">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center mb-4 shadow-lg shadow-cyan-500/20">
+                <Heart className="w-8 h-8 text-white fill-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-1">Welcome Back</h2>
+              <p className="text-slate-400 text-sm">Sign in to access your healthcare dashboard</p>
+            </div>
+
+            {/* Form */}
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              {/* Email Field */}
+              <div>
+                <label className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-2">
+                  <div className="w-4 h-4 rounded-full border border-emerald-500 flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  </div>
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                  <input
+                    id="email-address"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-colors"
+                    placeholder="arqummalk1@gmail.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Password Field */}
+              <div>
+                <label className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-2">
+                  <div className="w-4 h-4 rounded-full border border-emerald-500 flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  </div>
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-colors"
+                    placeholder="••••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Error Display (shown conditionally) */}
+              {toast?.type === 'error' && (
+                <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                  <div className="w-4 h-4 rounded-full border border-red-400 flex items-center justify-center shrink-0">
+                    <span className="text-red-400 text-xs">!</span>
+                  </div>
+                  <span className="text-red-400 text-xs">{toast.message}</span>
+                </div>
               )}
-            </button>
-          </div>
 
-          <div className="text-center space-y-2 pt-1">
-            <p className="text-sm text-slate-600 dark:text-slate-400">
-              Don't have an account?{' '}
-              <Link to="/signup" className="font-bold text-cyan-600 hover:text-cyan-500 dark:text-cyan-400 dark:hover:text-cyan-300 transition-colors hover:underline underline-offset-2">
-                Create one now
-              </Link>
-            </p>
-            <p className="text-xs text-slate-400 dark:text-slate-500">
-              Clinic staff?{' '}
-              <Link to="/staff-signup" className="font-bold text-blue-500 hover:text-blue-400 dark:text-blue-400 dark:hover:text-blue-300 transition-colors hover:underline underline-offset-2">
-                Register with Doctor's Code →
-              </Link>
-            </p>
+              {/* Sign In Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-500/50 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="animate-spin w-5 h-5" />
+                    Signing in...
+                  </>
+                ) : (
+                  <>
+                    <ArrowRight className="w-5 h-5" />
+                    Sign In
+                  </>
+                )}
+              </button>
+
+              {/* Sign Up Link */}
+              <div className="text-center pt-2">
+                <p className="text-sm text-slate-400">
+                  Don't have an account?{' '}
+                  <Link to="/signup" className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
+                    Sign up
+                  </Link>
+                </p>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )
