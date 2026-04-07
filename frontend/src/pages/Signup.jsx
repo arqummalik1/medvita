@@ -1,12 +1,42 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Lock, Mail, User, Activity, CheckCircle2, AlertCircle } from 'lucide-react'
+import { Lock, Mail, User, Activity, Heart, Stethoscope, CalendarDays, ShieldCheck, ArrowRight, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import { RadioGroup } from '@headlessui/react'
 import clsx from 'clsx'
 import { supabase } from '../lib/supabaseClient'
-import ThemeToggle from '../components/ThemeToggle'
 import { motion, AnimatePresence } from 'framer-motion'
+
+const features = [
+  {
+    icon: Stethoscope,
+    title: 'Doctor Dashboard',
+    description: 'Patient management, prescriptions, scheduling',
+    color: 'text-emerald-400',
+    bgColor: 'bg-emerald-500/20',
+  },
+  {
+    icon: Heart,
+    title: 'Patient Portal',
+    description: 'Book appointments, view prescriptions',
+    color: 'text-cyan-400',
+    bgColor: 'bg-cyan-500/20',
+  },
+  {
+    icon: CalendarDays,
+    title: 'Smart Scheduling',
+    description: 'AI-powered appointment management',
+    color: 'text-blue-400',
+    bgColor: 'bg-blue-500/20',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Secure & Compliant',
+    description: 'HIPAA-compliant data protection',
+    color: 'text-emerald-400',
+    bgColor: 'bg-emerald-500/20',
+  },
+]
 
 const roles = [
   { name: 'patient', label: 'Patient', description: 'Book appointments & view prescriptions' },
@@ -19,14 +49,17 @@ export default function Signup() {
   const [fullName, setFullName] = useState('')
   const [role, setRole] = useState(roles[0])
   const [toast, setToast] = useState(null)
+  const [formError, setFormError] = useState(null)
   const [loading, setLoading] = useState(false)
-  useAuth()
   const navigate = useNavigate()
 
+  const showToast = (type, message) => setToast({ type, message })
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setToast(null);
+    e.preventDefault()
+    setLoading(true)
+    setToast(null)
+    setFormError(null)
 
     try {
       const { data: { user }, error: signUpError } = await supabase.auth.signUp({
@@ -38,183 +71,264 @@ export default function Signup() {
             role: role.name,
           },
         },
-      });
+      })
 
-      if (signUpError) throw signUpError;
+      if (signUpError) throw signUpError
 
       if (user) {
-        setToast({ type: 'success', message: 'Account created successfully! Redirecting...' });
-        navigate('/dashboard', { replace: true });
+        showToast('success', 'Account created successfully! Redirecting...')
+        setTimeout(() => {
+          navigate('/dashboard', { replace: true })
+        }, 1000)
       }
     } catch (error) {
-      console.error('Signup error:', error);
-      setToast({ type: 'error', message: error.message || 'Signup failed. Please try again.' });
+      console.error('Signup error:', error)
+      setFormError(error.message || 'Signup failed. Please try again.')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-cyan-50 via-blue-50 to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-all duration-500 overflow-y-auto overflow-x-hidden">
+    <div className="min-h-screen flex bg-[#0B1120] overflow-hidden">
+      {/* Toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key="toast"
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className={clsx(
+              'fixed top-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[400px] p-4 rounded-xl shadow-2xl flex items-center gap-3 z-[100] border backdrop-blur-md',
+              toast.type === 'success'
+                ? 'bg-emerald-500 border-emerald-400 text-white'
+                : 'bg-red-500 border-red-400 text-white'
+            )}
+          >
+            {toast.type === 'success'
+              ? <CheckCircle2 className="w-5 h-5 shrink-0" />
+              : <AlertCircle className="w-5 h-5 shrink-0" />}
+            <p className="font-medium text-sm">{toast.message}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Background blobs — NO pink/purple */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-        <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-cyan-400/20 dark:bg-cyan-500/10 rounded-full mix-blend-multiply filter blur-[120px] opacity-60 dark:opacity-30 animate-pulse duration-[15s]" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[800px] h-[800px] bg-emerald-400/15 dark:bg-emerald-500/8 rounded-full mix-blend-multiply filter blur-[120px] opacity-50 dark:opacity-25 animate-pulse duration-[18s]" />
-        <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-400/10 dark:bg-blue-500/5 rounded-full mix-blend-multiply filter blur-[100px] opacity-40 dark:opacity-20 animate-pulse duration-[12s]" />
-      </div>
-
-      <div className="w-full max-w-xl p-6 sm:p-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-2xl rounded-3xl sm:rounded-[40px] shadow-2xl border border-white/50 dark:border-slate-700/50 relative z-10 my-auto">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-emerald-500/10 to-cyan-500/10 rounded-full blur-3xl" />
-
-        {/* Toast */}
-        <AnimatePresence>
-          {toast && (
-            <motion.div
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              className={clsx(
-                'fixed top-6 left-1/2 -translate-x-1/2 w-[90%] md:w-[400px] p-4 rounded-xl shadow-2xl flex items-center gap-3 z-[100] border backdrop-blur-md',
-                toast.type === 'success'
-                  ? 'bg-emerald-500 border-emerald-400 text-white'
-                  : 'bg-red-500 border-red-400 text-white'
-              )}
-            >
-              {toast.type === 'success' ? (
-                <CheckCircle2 className="w-6 h-6 text-emerald-500 dark:text-emerald-400 shrink-0" />
-              ) : (
-                <AlertCircle className="w-6 h-6 text-red-500 dark:text-red-400 shrink-0" />
-              )}
-              <p className="font-medium text-sm">{toast.message}</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <div className="text-center mb-6 sm:mb-10 relative z-10">
-          {/* App icon — cyan to emerald */}
-          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-cyan-500 via-teal-500 to-emerald-500 mb-4 sm:mb-6 group shadow-xl shadow-cyan-500/30 hover:scale-110 transition-transform duration-300 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
-            <Activity className="h-8 w-8 sm:h-10 sm:w-10 text-white relative z-10" />
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-2 sm:mb-3 tracking-tight">Create Account</h2>
-          <p className="text-slate-500 dark:text-slate-400 text-base sm:text-lg font-medium">Join MedVita today</p>
+      {/* Left Panel - Hero Section */}
+      <div className="hidden lg:flex lg:w-[55%] xl:w-[60%] relative flex-col justify-center px-12 xl:px-20">
+        {/* Background gradient effects */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-[-20%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[100px]" />
+          <div className="absolute top-1/2 left-1/3 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[80px]" />
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-5">
-            <div className="relative">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 ml-1">Full Name</label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-cyan-500">
-                  <User className="h-5 w-5 text-slate-400" />
-                </div>
-                <input
-                  name="fullName"
-                  type="text"
-                  required
-                  className="input-field pl-12"
-                  placeholder="e.g. John Doe"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="relative">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 ml-1">Email address</label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-cyan-500">
-                  <Mail className="h-5 w-5 text-slate-400" />
-                </div>
-                <input
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  className="input-field pl-12"
-                  placeholder="e.g. john@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="relative">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2 ml-1">Password</label>
-              <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-cyan-500">
-                  <Lock className="h-5 w-5 text-slate-400" />
-                </div>
-                <input
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  className="input-field pl-12"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-            </div>
+        <div className="relative z-10 max-w-xl">
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/50 border border-slate-700/50 mb-8">
+            <Activity className="w-4 h-4 text-emerald-400" />
+            <span className="text-sm font-medium text-slate-300">MedVita Healthcare Platform</span>
           </div>
 
-          {/* Role selector — cyan to blue, NO purple */}
-          <RadioGroup value={role} onChange={setRole} className="relative z-10">
-            <RadioGroup.Label className="sr-only">Role</RadioGroup.Label>
-            <div className="grid grid-cols-2 gap-3 mt-6">
-              {roles.map((roleOption) => (
-                <RadioGroup.Option
-                  key={roleOption.name}
-                  value={roleOption}
-                  className={({ active, checked }) =>
-                    clsx(
-                      active ? 'ring-2 ring-cyan-500 ring-offset-2 dark:ring-offset-slate-800' : '',
-                      checked
-                        ? 'bg-gradient-to-br from-cyan-500 to-blue-500 border-transparent text-white shadow-xl shadow-cyan-500/30 scale-105'
-                        : 'bg-white/60 dark:bg-slate-800/60 border-slate-200/50 dark:border-slate-700/50 text-slate-700 dark:text-slate-300 hover:bg-white/80 dark:hover:bg-slate-700/80 hover:border-cyan-300 dark:hover:border-cyan-600',
-                      'relative border rounded-xl sm:rounded-2xl px-3 sm:px-4 py-3 sm:py-4 flex flex-col items-center justify-center text-sm font-bold cursor-pointer focus:outline-none transition-all duration-300 backdrop-blur-sm'
-                    )
-                  }
-                >
-                  <RadioGroup.Label as="span" className="text-xs sm:text-sm">{roleOption.label}</RadioGroup.Label>
-                </RadioGroup.Option>
-              ))}
-            </div>
-          </RadioGroup>
+          {/* Heading */}
+          <h1 className="text-5xl xl:text-6xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              Modern Healthcare
+            </span>
+            <br />
+            <span className="text-white">Management</span>
+          </h1>
 
-          <div className="relative z-10">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-bold py-4 px-6 rounded-2xl text-base shadow-xl shadow-cyan-500/30 hover:shadow-2xl hover:shadow-cyan-500/40 transition-all duration-300 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 relative overflow-hidden group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-              {loading ? (
-                <span className="flex items-center justify-center gap-2 relative z-10">
-                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Creating account...
-                </span>
-              ) : (
-                <span className="relative z-10">Create Account</span>
+          {/* Description */}
+          <p className="text-slate-400 text-lg mb-10 max-w-md">
+            Streamline your medical practice with intelligent patient management, digital prescriptions, and seamless appointment scheduling.
+          </p>
+
+          {/* Feature Cards Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="p-4 rounded-xl bg-slate-800/40 border border-slate-700/50 backdrop-blur-sm hover:bg-slate-800/60 transition-colors"
+              >
+                <div className={`inline-flex items-center justify-center w-10 h-10 rounded-lg ${feature.bgColor} mb-3`}>
+                  <feature.icon className={`w-5 h-5 ${feature.color}`} />
+                </div>
+                <h3 className="text-white font-semibold text-sm mb-1">{feature.title}</h3>
+                <p className="text-slate-500 text-xs leading-relaxed">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right Panel - Signup Form */}
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 relative overflow-y-auto">
+        {/* Form Card */}
+        <div className="w-full max-w-md">
+          <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-8 shadow-2xl">
+            {/* Logo */}
+            <div className="flex flex-col items-center mb-8">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center mb-4 shadow-lg shadow-cyan-500/20">
+                <Heart className="w-8 h-8 text-white fill-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-1">Create Account</h2>
+              <p className="text-slate-400 text-sm">Join MedVita today</p>
+            </div>
+
+            {/* Form */}
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              {/* Full Name Field */}
+              <div>
+                <label className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-2">
+                  <div className="w-4 h-4 rounded-full border border-emerald-500 flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  </div>
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                  <input
+                    name="fullName"
+                    type="text"
+                    required
+                    className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-colors"
+                    placeholder="e.g. John Doe"
+                    value={fullName}
+                    onChange={(e) => {
+                      setFullName(e.target.value)
+                      setFormError(null)
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Email Field */}
+              <div>
+                <label className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-2">
+                  <div className="w-4 h-4 rounded-full border border-emerald-500 flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  </div>
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                  <input
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-colors"
+                    placeholder="name@example.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value)
+                      setFormError(null)
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Password Field */}
+              <div>
+                <label className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-2">
+                  <div className="w-4 h-4 rounded-full border border-emerald-500 flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  </div>
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                  <input
+                    name="password"
+                    type="password"
+                    autoComplete="new-password"
+                    required
+                    className="w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-colors"
+                    placeholder="••••••••••"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value)
+                      setFormError(null)
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Role Selector */}
+              <div>
+                <label className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-2">
+                  <div className="w-4 h-4 rounded-full border border-emerald-500 flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  </div>
+                  Select Role
+                </label>
+                <RadioGroup value={role} onChange={setRole}>
+                  <RadioGroup.Label className="sr-only">Role</RadioGroup.Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {roles.map((roleOption) => (
+                      <RadioGroup.Option
+                        key={roleOption.name}
+                        value={roleOption}
+                        className={({ checked }) =>
+                          clsx(
+                            checked
+                              ? 'bg-emerald-500/20 border-emerald-500 text-white'
+                              : 'bg-slate-800/50 border-slate-700 text-slate-400 hover:border-slate-600',
+                            'relative border rounded-xl px-4 py-3 flex flex-col items-center justify-center cursor-pointer focus:outline-none transition-all duration-200'
+                          )
+                        }
+                      >
+                        <RadioGroup.Label as="span" className="text-sm font-semibold">
+                          {roleOption.label}
+                        </RadioGroup.Label>
+                      </RadioGroup.Option>
+                    ))}
+                  </div>
+                </RadioGroup>
+              </div>
+
+              {/* Error Display */}
+              {formError && (
+                <div className="flex items-center gap-2 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                  <div className="w-4 h-4 rounded-full border border-red-400 flex items-center justify-center shrink-0">
+                    <span className="text-red-400 text-xs">!</span>
+                  </div>
+                  <span className="text-red-400 text-xs">{formError}</span>
+                </div>
               )}
-            </button>
-          </div>
 
-          <div className="text-center pt-2 relative z-10">
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Already have an account?{' '}
-              <Link to="/login" className="font-bold text-cyan-600 hover:text-cyan-500 dark:text-cyan-400 dark:hover:text-cyan-300 transition-colors underline-offset-2 hover:underline">
-                Sign in
-              </Link>
-            </p>
+              {/* Create Account Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-500/50 disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-xl transition-colors"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="animate-spin w-5 h-5" />
+                    Creating account...
+                  </>
+                ) : (
+                  <>
+                    <ArrowRight className="w-5 h-5" />
+                    Create Account
+                  </>
+                )}
+              </button>
+
+              {/* Login Link */}
+              <div className="text-center pt-2">
+                <p className="text-sm text-slate-400">
+                  Already have an account?{' '}
+                  <Link to="/login" className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
+                    Sign in
+                  </Link>
+                </p>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )
